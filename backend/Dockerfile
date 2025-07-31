@@ -35,7 +35,8 @@ USER appuser
 EXPOSE 3000
 
 # Healthcheck, der prüft, ob die API und die DB-Verbindung funktionieren
-HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+# KORREKTUR: Längere start-period und mehr retries, um der App Zeit zum Verbinden zu geben
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=5 \
   CMD curl -f http://localhost:3000/api/health || exit 1
 
 CMD [ "npm", "start" ]
