@@ -176,6 +176,10 @@ export class Tournament {
     }
 
     private assignTimesAndFields(round: Round): void {
+        if (round.matches.length === 0) {
+            return; // KORREKTUR: Funktion beenden, wenn keine Spiele vorhanden sind
+        }
+
         const { numFields, matchDuration, pauseDuration, startDate, startTime } = this.config;
         
         let roundStartTime = this.nextRoundStartTime;
