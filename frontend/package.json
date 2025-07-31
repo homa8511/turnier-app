@@ -11,10 +11,12 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "dompurify": "^3.2.6",
     "sweetalert2": "^11.10.1",
     "vue": "^3.4.29"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/eslint-config-typescript": "^13.0.0",
     "autoprefixer": "^10.4.19",
