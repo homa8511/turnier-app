@@ -84,3 +84,18 @@ jobs:
       - name: Shutdown Docker Services
         if: always()
         run: docker compose -f docker-compose.ci.yml down
+        
+  sonarcloud-analysis:
+    needs: [unit-tests, api-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: backend
