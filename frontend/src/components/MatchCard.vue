@@ -7,16 +7,16 @@
             <img :src="team1.logo" :alt="`${team1.name} Logo`" class="w-7 h-7 rounded-full object-cover">
             <span class="font-medium text-right truncate" :title="team1.name">{{ team1.name }}</span>
             <div class="flex items-center gap-1">
-                <input type="number" min="0" :id="`score-${team1.id}-vs-${team2.id}-1`" class="w-14 text-center font-bold bg-white dark:bg-gray-600 border rounded-md" :value="match.score1 ?? ''" :disabled="isFinished || isReadOnly">
+                <input :id="`score-${team1.id}-vs-${team2.id}-1`" type="number" min="0" class="w-14 text-center font-bold bg-white dark:bg-gray-600 border rounded-md" :value="match.score1 ?? ''" :disabled="isFinished || isReadOnly">
                 <span>:</span>
-                <input type="number" min="0" :id="`score-${team1.id}-vs-${team2.id}-2`" class="w-14 text-center font-bold bg-white dark:bg-gray-600 border rounded-md" :value="match.score2 ?? ''" :disabled="isFinished || isReadOnly">
+                <input :id="`score-${team1.id}-vs-${team2.id}-2`" type="number" min="0" class="w-14 text-center font-bold bg-white dark:bg-gray-600 border rounded-md" :value="match.score2 ?? ''" :disabled="isFinished || isReadOnly">
             </div>
             <span class="font-medium text-left truncate" :title="team2.name">{{ team2.name }}</span>
             <img :src="team2.logo" :alt="`${team2.name} Logo`" class="w-7 h-7 rounded-full object-cover">
         </div>
-         <div class="flex justify-end mt-2 h-8" v-if="!isReadOnly">
-            <button v-if="isFinished" @click="emit('edit', match)" class="edit-match-btn text-white text-xs font-bold py-2 px-3 rounded-md transition-colors bg-yellow-500 hover:bg-yellow-600">Editieren</button>
-            <button v-else @click="emit('save', match)" class="save-match-btn text-white text-xs font-bold py-2 px-3 rounded-md transition-colors bg-blue-500 hover:bg-blue-600">Speichern</button>
+         <div v-if="!isReadOnly" class="flex justify-end mt-2 h-8">
+            <button v-if="isFinished" class="edit-match-btn text-white text-xs font-bold py-2 px-3 rounded-md transition-colors bg-yellow-500 hover:bg-yellow-600" @click="emit('edit', match)">Editieren</button>
+            <button v-else class="save-match-btn text-white text-xs font-bold py-2 px-3 rounded-md transition-colors bg-blue-500 hover:bg-blue-600" @click="emit('save', match)">Speichern</button>
          </div>
     </div>
 </template>

@@ -19,10 +19,10 @@
             </div>
         </div>
         <div class="mt-8 flex flex-col md:flex-row gap-4 justify-center">
-            <button @click="editConfig" class="w-full md:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg">
+            <button class="w-full md:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg" @click="editConfig">
                 Konfiguration bearbeiten
             </button>
-            <button @click="start" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg">
+            <button class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg" @click="start">
                 Turnier starten
             </button>
         </div>
@@ -112,8 +112,12 @@ async function start() {
         const startedTournament = await startTournament(state.config.id, teamsToStart);
         store.setState(startedTournament);
 
-    } catch (error: any) {
-        Swal.fire('Fehler', error.message, 'error');
+    } catch (error) {
+        if (error instanceof Error) {
+            Swal.fire('Fehler', error.message, 'error');
+        } else {
+            Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+        }
     } finally {
         store.setLoading(false);
     }

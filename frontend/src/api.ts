@@ -1,9 +1,12 @@
+src/api.ts (Korrigiert)
 import Swal from 'sweetalert2';
 import type { Tournament, TournamentConfig } from './types';
 
 const API_URL = '/api';
 
-async function handleResponse(response: Response): Promise<any> {
+// Korrigiert: Der Rückgabetyp ist jetzt 'unknown', um 'any' zu vermeiden.
+// Die aufrufenden Funktionen müssen den Typ explizit umwandeln.
+async function handleResponse(response: Response): Promise<unknown> {
     if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Ein Serverfehler ist aufgetreten.');
@@ -12,41 +15,46 @@ async function handleResponse(response: Response): Promise<any> {
 }
 
 export async function createTournament(config: Omit<TournamentConfig, 'id'>): Promise<Tournament> {
-    return fetch(`${API_URL}/tournaments`, {
+    const response = await fetch(`${API_URL}/tournaments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config }),
-    }).then(handleResponse);
+    });
+    return handleResponse(response) as Promise<Tournament>;
 }
 
 export async function startTournament(id: string, teams: { name: string; group: string; logo: string }[]): Promise<Tournament> {
-    return fetch(`${API_URL}/tournaments/${id}/start`, {
+    const response = await fetch(`${API_URL}/tournaments/${id}/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ teams }),
-    }).then(handleResponse);
+    });
+    return handleResponse(response) as Promise<Tournament>;
 }
 
 export async function recordResult(id: string, result: { roundNumber: number, team1Id: number, team2Id: number, score1: number, score2: number }): Promise<Tournament> {
-    return fetch(`${API_URL}/tournaments/${id}/matches`, {
+    const response = await fetch(`${API_URL}/tournaments/${id}/matches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(result),
-    }).then(handleResponse);
+    });
+    return handleResponse(response) as Promise<Tournament>;
 }
 
 export async function generateNextRound(id: string): Promise<Tournament> {
-    return fetch(`${API_URL}/tournaments/${id}/next-round`, {
+    const response = await fetch(`${API_URL}/tournaments/${id}/next-round`, {
         method: 'POST',
-    }).then(handleResponse);
+    });
+    return handleResponse(response) as Promise<Tournament>;
 }
 
 export async function updateTournamentConfig(id: string, config: Partial<Omit<TournamentConfig, 'id'>>): Promise<Tournament> {
-    return fetch(`${API_URL}/tournaments/${id}/config`, {
+    const response = await fetch(`${API_URL}/tournaments/${id}/config`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ config }),
-    }).then(handleResponse);
+    });
+    return handleResponse(response) as Promise<Tournament>;
 }
 
 export async function loadTournament(id: string): Promise<Tournament | null> {
@@ -64,7 +72,7 @@ export async function loadTournament(id: string): Promise<Tournament | null> {
             }
             return null;
         }
-        return await response.json();
+        return await response.json() as Tournament;
     } catch (e) {
         console.error("Laden fehlgeschlagen:", e);
         Swal.fire('Fehler', 'Die Turnierdaten konnten nicht vom Server geladen werden.', 'error');

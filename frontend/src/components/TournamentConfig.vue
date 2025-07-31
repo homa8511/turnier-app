@@ -6,7 +6,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
                 <label for="tournament-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Turniername</label>
-                <input type="text" id="tournament-name" v-model="state.config.tournamentName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                <input id="tournament-name" type="text" v-model="state.config.tournamentName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
             </div>
 
             <div class="md:col-span-2">
@@ -15,7 +15,7 @@
                     <img :src="imagePreview" alt="Vorschau" class="h-16 w-32 object-cover rounded-md bg-gray-100 dark:bg-gray-700">
                     <label for="tournament-image-upload" class="cursor-pointer bg-white dark:bg-gray-700 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <span>Bild ändern</span>
-                        <input id="tournament-image-upload" name="tournament-image-upload" type="file" class="sr-only" @change="handleImageUpload" accept="image/jpeg, image/webp">
+                        <input id="tournament-image-upload" name="tournament-image-upload" type="file" class="sr-only" accept="image/jpeg, image/webp" @change="handleImageUpload">
                     </label>
                 </div>
             </div>
@@ -25,11 +25,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="location-name" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Name des Ortes</label>
-                        <input type="text" id="location-name" v-model="state.config.location.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="location-name" type="text" v-model="state.config.location.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="location-address" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Adresse</label>
-                        <input type="text" id="location-address" v-model="state.config.location.address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="location-address" type="text" v-model="state.config.location.address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                 </div>
             </div>
@@ -44,37 +44,37 @@
                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label for="num-groups" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Gruppen</label>
-                        <input type="number" id="num-groups" v-model="state.config.numGroups" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="num-groups" type="number" v-model="state.config.numGroups" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="teams-per-group" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Teams/Gr.</label>
-                        <input type="number" id="teams-per-group" v-model="state.config.teamsPerGroup" min="2" step="2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="teams-per-group" type="number" v-model="state.config.teamsPerGroup" min="2" step="2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="num-fields" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Felder</label>
-                        <input type="number" id="num-fields" v-model="state.config.numFields" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="num-fields" type="number" v-model="state.config.numFields" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="match-duration" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Dauer (Min)</label>
-                        <input type="number" id="match-duration" v-model="state.config.matchDuration" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="match-duration" type="number" v-model="state.config.matchDuration" min="1" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="pause-duration" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Pause (Min)</label>
-                        <input type="number" id="pause-duration" v-model="state.config.pauseDuration" min="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="pause-duration" type="number" v-model="state.config.pauseDuration" min="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div>
                         <label for="start-date" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Datum</label>
-                        <input type="date" id="start-date" v-model="state.config.startDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="start-date" type="date" v-model="state.config.startDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                     <div class="md:col-span-2">
                         <label for="start-time" class="block mb-1 text-xs text-gray-700 dark:text-gray-400">Startzeit</label>
-                        <input type="time" id="start-time" v-model="state.config.startTime" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="start-time" type="time" v-model="state.config.startTime" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                     </div>
                  </div>
             </div>
         </div>
         <div class="mt-8 text-center">
-            <button @click="handleAction" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg">
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg" @click="handleAction">
                 {{ isEditing ? 'Änderungen speichern' : 'Weiter zur Teameingabe' }}
             </button>
         </div>
@@ -130,8 +130,12 @@ async function goToTeamSetup() {
         const newTournamentState = await createTournament(state.config);
         store.setState(newTournamentState);
         window.history.pushState({}, '', `/host/event/${newTournamentState.config.id}`);
-    } catch (error: any) {
-        Swal.fire('Fehler', error.message, 'error');
+    } catch (error) {
+        if (error instanceof Error) {
+            Swal.fire('Fehler', error.message, 'error');
+        } else {
+            Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+        }
     } finally {
         store.setLoading(false);
     }
@@ -144,8 +148,12 @@ async function saveChanges() {
         const updatedTournament = await updateTournamentConfig(state.config.id, state.config);
         store.setState(updatedTournament);
         store.setEditingConfig(false);
-    } catch (error: any) {
-        Swal.fire('Fehler', error.message, 'error');
+    } catch (error) {
+        if (error instanceof Error) {
+            Swal.fire('Fehler', error.message, 'error');
+        } else {
+            Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+        }
     } finally {
         store.setLoading(false);
     }

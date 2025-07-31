@@ -74,8 +74,12 @@ async function save(match: Match) {
         const updatedTournament = await recordResult(state.config.id, result);
         store.setState(updatedTournament);
 
-    } catch (error: any) {
-        Swal.fire('Fehler', error.message, 'error');
+    } catch (error) {
+        if (error instanceof Error) {
+            Swal.fire('Fehler', error.message, 'error');
+        } else {
+            Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+        }
     } finally {
         store.setLoading(false);
     }
