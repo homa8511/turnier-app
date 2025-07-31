@@ -78,9 +78,8 @@ jobs:
             sleep 5;
           done
 
-      - name: Run API Tests on Runner
-        run: npm run test:api
-        working-directory: ./backend
+      - name: Run API Tests in Docker
+        run: docker compose -f docker-compose.ci.yml run --rm test-runner
         
       - name: Shutdown Docker Services
         if: always()
