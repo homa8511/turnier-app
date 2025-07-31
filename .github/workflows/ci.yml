@@ -55,20 +55,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Create Test Environment File
-        # KORREKTUR: Kopiere die .env-Datei in das Hauptverzeichnis
         run: cp backend/.env.test ./.env
-      - name: Build and Run Docker Compose
-        run: docker compose up --build -d db backend
+      - name: Build and Run Docker Compose services for testing
+        # Verwendet jetzt die CI-spezifische Compose-Datei
+        run: docker compose -f docker-compose.ci.yml up --build -d
       - name: Wait for Database to be ready
         run: >
-          until docker compose exec -T db pg_isready --username=$POSTGRES_USER; do
+          until docker compose -f docker-compose.ci.yml exec -T db pg_isready --username=$POSTGRES_USER; do
             echo "Waiting for database...";
             sleep 2;
           done
         env:
           POSTGRES_USER: testuser
       - name: Run API Tests
-        run: docker compose exec -T backend npm run test:api
+        run: docker compose -f docker-compose.ci.yml exec -T backend npm run test:api
       - name: Shutdown Docker Compose
         if: always()
-        run: docker compose down
+        run: docker compose -f docker-compose.ci.yml down

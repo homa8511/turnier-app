@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      args:
+        - NODE_VERSION=${NODE_VERSION:-22.4.0-alpine}
+    restart: always
+    env_file:
+      - ./.env
+    networks:
+      - turnier-netzwerk
+    volumes:
+      - uploads_data:/usr/src/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:${POSTGRES_VERSION:-15-alpine}
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - turnier-netzwerk
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  turnier-netzwerk:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  uploads_data:
