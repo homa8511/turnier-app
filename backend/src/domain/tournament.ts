@@ -34,8 +34,9 @@ export class Tournament {
     public config: TournamentConfig;
     public nextRoundStartTime: Date | null = null;
 
-    constructor(initialState: Partial<Tournament>) {
+    constructor(initialState: Partial<Tournament> & { config: TournamentConfig }) {
         Object.assign(this, { ...initialState, teams: [], rounds: [] });
+        this.config = initialState.config; // Explizite Zuweisung
         
         if (initialState.teams) {
             this.teams = initialState.teams.map((t: Team) => Object.assign(new Team(t.id, t.name, t.group, t.logo), t));

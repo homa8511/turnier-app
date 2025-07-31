@@ -1,92 +1,95 @@
-import { TournamentService } from '../../application/tournamentService';
-import { InMemoryTournamentRepository } from '../mocks/inMemoryTournamentRepository';
-import { TournamentConfig } from '../../domain/tournament';
+import { Tournament, TournamentConfig } from '../domain/tournament';
+import { TournamentRepository } from '../domain/tournamentRepository';
 import fs from 'fs/promises';
+import path from 'path';
 
-jest.mock('fs/promises');
+export class TournamentService {
+    constructor(private tournamentRepository: TournamentRepository) {}
 
-describe('TournamentService', () => {
-    let service: TournamentService;
-    let repository: InMemoryTournamentRepository;
-    let config: Omit<TournamentConfig, 'id'>;
+    async createNewTournament(config: Omit<TournamentConfig, 'id'>): Promise<Tournament> {
+        const tournament = Tournament.create(config);
+        await this.processTournamentImage(tournament);
+        await this.tournamentRepository.save(tournament);
+        return tournament;
+    }
 
-    beforeEach(() => {
-        repository = new InMemoryTournamentRepository();
-        service = new TournamentService(repository);
-        jest.clearAllMocks();
+    async updateTournamentConfig(id: string, configData: Partial<Omit<TournamentConfig, 'id'>>): Promise<Tournament> {
+        const tournament = await this.tournamentRepository.findById(id);
+        if (!tournament) throw new Error("Tournament not found");
 
-        config = {
-            tournamentName: 'Test Cup',
-            location: { name: 'Testplatz', address: 'Testweg 1' },
-            description: '',
-            numGroups: 1, teamsPerGroup: 2, numFields: 1,
-            matchDuration: 10, pauseDuration: 5,
-            startDate: '2025-01-01', startTime: '10:00',
-        };
-    });
+        tournament.updateConfig(configData);
+        await this.processTournamentImage(tournament);
+        await this.tournamentRepository.save(tournament);
+        return tournament;
+    }
 
-    it('sollte ein neues Turnier erstellen und speichern', async () => {
-        const tournament = await service.createNewTournament(config);
-        expect(tournament.config.id).toBeDefined();
-        expect(tournament.status).toBe('setup');
+    async startTournament(id: string, teamsData: { name: string; group: string; logo: string }[]): Promise<Tournament> {
+        const tournament = await this.tournamentRepository.findById(id);
+        if (!tournament) throw new Error("Tournament not found");
 
-        const saved = await repository.findById(tournament.config.id!);
-        expect(saved).toBeDefined();
-        expect(saved!.config.id).toBe(tournament.config.id);
-    });
-
-    it('sollte ein Turnier starten, Logos verarbeiten und speichern', async () => {
-        const initialTournament = await service.createNewTournament(config);
-        const teamsData = [
-            { name: 'Team A', group: 'A', logo: 'data:image/webp;base64,UklGRgA=' },
-            { name: 'Team B', group: 'A', logo: 'logo.png' }
-        ];
-        
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
-
-        const startedTournament = await service.startTournament(initialTournament.config.id!, teamsData);
-
-        expect(startedTournament.status).toBe('playing');
-        expect(startedTournament.rounds.length).toBe(1);
-        expect(writeFileSpy).toHaveBeenCalledTimes(1);
-
-        const saved = await repository.findById(initialTournament.config.id!);
-        expect(saved!.teams[0].logo).toContain('/uploads/');
-        expect(saved!.teams[1].logo).toBe('logo.png');
-    });
-
-    it('sollte die Konfiguration eines Turniers im "setup"-Status aktualisieren', async () => {
-        const tournament = await service.createNewTournament(config);
-        const newConfigData = { tournamentName: 'Neuer Name' };
-
-        const updatedTournament = await service.updateTournamentConfig(tournament.config.id!, newConfigData);
-
-        expect(updatedTournament.config.tournamentName).toBe('Neuer Name');
-        const saved = await repository.findById(tournament.config.id!);
-        expect(saved!.config.tournamentName).toBe('Neuer Name');
-    });
-
-    it('sollte einen Fehler werfen, wenn versucht wird, die Konfiguration eines gestarteten Turniers zu ändern', async () => {
-        const tournament = await service.createNewTournament(config);
-        await service.startTournament(tournament.config.id!, []);
-
-        const newConfigData = { tournamentName: 'Anderer Name' };
-        
-        await expect(
-            service.updateTournamentConfig(tournament.config.id!, newConfigData)
-        ).rejects.toThrow("Configuration can only be edited before the tournament has started.");
-    });
+        tournament.start(teamsData);
+        await this.processTeamLogos(tournament);
+        await this.tournamentRepository.save(tournament);
+        return tournament;
+    }
     
-    it('sollte ein neues Turnier erstellen und ein Turnierbild als Datei speichern', async () => {
-        const configWithImage = {
-            ...config,
-            imageUrl: 'data:image/jpeg;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-        };
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
+    async recordMatchResult(id: string, roundNumber: number, team1Id: number, team2Id: number, score1: number, score2: number): Promise<Tournament> {
+        const tournament = await this.tournamentRepository.findById(id);
+        if (!tournament) throw new Error("Tournament not found");
 
-        const tournament = await service.createNewTournament(configWithImage);
+        tournament.recordResult(roundNumber, team1Id, team2Id, score1, score2);
+        await this.tournamentRepository.save(tournament);
+        return tournament;
+    }
 
-        expect(writeFileSpy).toHaveBeenCalled();
-        expect(tournament.config.imageUrl).toContain('/uploads/' + tournament.config.id + '/header.jpeg');
-    });
-});
+    async advanceToNextRound(id: string): Promise<Tournament> {
+        const tournament = await this.tournamentRepository.findById(id);
+        if (!tournament) throw new Error("Tournament not found");
+
+        tournament.generateNextRound();
+        await this.tournamentRepository.save(tournament);
+        return tournament;
+    }
+
+    async getTournament(id: string): Promise<Tournament | null> {
+        return await this.tournamentRepository.findById(id);
+    }
+
+    private async processTournamentImage(tournament: Tournament): Promise<void> {
+        if (!tournament.config.id || !tournament.config.imageUrl || !tournament.config.imageUrl.startsWith('data:image/')) {
+            return;
+        }
+        
+        const tournamentUploadDir = path.join('uploads', tournament.config.id);
+        await fs.mkdir(tournamentUploadDir, { recursive: true });
+
+        const base64Data = tournament.config.imageUrl.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, 'base64');
+        const fileExtension = tournament.config.imageUrl.substring(tournament.config.imageUrl.indexOf('/') + 1, tournament.config.imageUrl.indexOf(';base64'));
+        const fileName = `header.${fileExtension}`;
+        const filePath = path.join(tournamentUploadDir, fileName);
+
+        await fs.writeFile(filePath, buffer);
+        tournament.config.imageUrl = `/uploads/${tournament.config.id}/${fileName}`;
+    }
+
+    private async processTeamLogos(tournament: Tournament): Promise<void> {
+        if (!tournament.config.id) return;
+        
+        const tournamentUploadDir = path.join('uploads', tournament.config.id);
+        await fs.mkdir(tournamentUploadDir, { recursive: true });
+
+        for (const team of tournament.teams) {
+            if (team.logo && team.logo.startsWith('data:image/')) {
+                const base64Data = team.logo.replace(/^data:image\/\w+;base64,/, "");
+                const buffer = Buffer.from(base64Data, 'base64');
+                const fileExtension = team.logo.substring(team.logo.indexOf('/') + 1, team.logo.indexOf(';base64'));
+                const fileName = `team-${team.id}.${fileExtension}`;
+                const filePath = path.join(tournamentUploadDir, fileName);
+
+                await fs.writeFile(filePath, buffer);
+                team.logo = `/uploads/${tournament.config.id}/${fileName}`;
+            }
+        }
+    }
+}
