@@ -12,8 +12,5 @@ dist
 .env
 .env.test
 
-# TypeScript-Quellcode im finalen Image nicht benötigt
-src
-
 # Laufzeit-Uploads (sollen nur im Volume existieren, nicht im Image)
 uploads
