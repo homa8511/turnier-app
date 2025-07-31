@@ -4,19 +4,23 @@ import { apiRouter } from '../interfaces/api';
 import { pool, initializeDatabase } from '../infrastructure/database';
 import { TournamentConfig } from '../domain/tournament';
 
+// Wir bauen eine Mini-App nur für die Tests
 const app = express();
 app.use(express.json());
 app.use('/api', apiRouter);
 
 beforeAll(async () => {
+    // Stellt sicher, dass die DB-Verbindung steht und die Tabelle existiert
     await initializeDatabase();
 });
 
 afterEach(async () => {
+    // Löscht alle Daten nach jedem Test, um saubere Tests zu gewährleisten
     await pool.query('DELETE FROM tournaments');
 });
 
 afterAll(async () => {
+    // Schließt die DB-Verbindung am Ende
     await pool.end();
 });
 
@@ -26,12 +30,14 @@ describe('Tournament API End-to-End Tests', () => {
         tournamentName: 'API Test Cup',
         location: { name: 'Teststadion', address: 'Teststr. 1' },
         description: 'Ein Test',
+        imageUrl: '',
         numGroups: 1, teamsPerGroup: 4, numFields: 1,
         matchDuration: 10, pauseDuration: 5,
         startDate: '2025-01-01', startTime: '12:00',
     };
 
     it('sollte einen kompletten Turnier-Lebenszyklus durchlaufen', async () => {
+        // 1. Turnier erstellen
         const createResponse = await request(app)
             .post('/api/tournaments')
             .send({ config: baseConfig });
@@ -40,6 +46,7 @@ describe('Tournament API End-to-End Tests', () => {
         expect(createResponse.body.config.id).toBeDefined();
         const tournamentId = createResponse.body.config.id;
 
+        // 2. Turnier starten
         const startResponse = await request(app)
             .post(`/api/tournaments/${tournamentId}/start`)
             .send({
@@ -54,9 +61,11 @@ describe('Tournament API End-to-End Tests', () => {
         expect(startResponse.status).toBe(200);
         expect(startResponse.body.status).toBe('playing');
         const round1 = startResponse.body.rounds[0];
+        expect(round1.matches.length).toBe(2);
 
+        // 3. Ergebnisse für Runde 1 eintragen
         for (const match of round1.matches) {
-            await request(app)
+            const resultResponse = await request(app)
                 .post(`/api/tournaments/${tournamentId}/matches`)
                 .send({
                     roundNumber: 1,
@@ -65,19 +74,25 @@ describe('Tournament API End-to-End Tests', () => {
                     score1: 2,
                     score2: 1
                 });
+            expect(resultResponse.status).toBe(200);
         }
 
+        // 4. Nächste Runde generieren
         const nextRoundResponse = await request(app)
             .post(`/api/tournaments/${tournamentId}/next-round`);
 
         expect(nextRoundResponse.status).toBe(200);
         expect(nextRoundResponse.body.currentRound).toBe(2);
+        expect(nextRoundResponse.body.rounds.length).toBe(2);
 
+        // 5. Turnier laden und den Zustand überprüfen
         const getResponse = await request(app)
             .get(`/api/tournaments/${tournamentId}`);
         
         expect(getResponse.status).toBe(200);
+        expect(getResponse.body.config.id).toBe(tournamentId);
         expect(getResponse.body.currentRound).toBe(2);
+        expect(getResponse.body.teams[0].played).toBe(1);
     });
 
     it('sollte mit 404 antworten, wenn ein nicht existierendes Turnier geladen wird', async () => {
@@ -123,99 +138,5 @@ describe('Tournament API End-to-End Tests', () => {
 
         expect(updateResponse.status).toBe(403);
         expect(updateResponse.body.error).toContain('before the tournament has started');
-    });
-});
-
-src/__tests__/application/tournamentService.spec.ts
-import { TournamentService } from '../../application/tournamentService';
-import { InMemoryTournamentRepository } from '../mocks/inMemoryTournamentRepository';
-import { TournamentConfig } from '../../domain/tournament';
-import fs from 'fs/promises';
-
-jest.mock('fs/promises');
-
-describe('TournamentService', () => {
-    let service: TournamentService;
-    let repository: InMemoryTournamentRepository;
-    let config: Omit<TournamentConfig, 'id'>;
-
-    beforeEach(() => {
-        repository = new InMemoryTournamentRepository();
-        service = new TournamentService(repository);
-        jest.clearAllMocks();
-
-        config = {
-            tournamentName: 'Test Cup',
-            location: { name: 'Testplatz', address: 'Testweg 1' },
-            description: '',
-            numGroups: 1, teamsPerGroup: 2, numFields: 1,
-            matchDuration: 10, pauseDuration: 5,
-            startDate: '2025-01-01', startTime: '10:00',
-        };
-    });
-
-    it('sollte ein neues Turnier erstellen und speichern', async () => {
-        const tournament = await service.createNewTournament(config);
-        expect(tournament.config.id).toBeDefined();
-        expect(tournament.status).toBe('setup');
-
-        const saved = await repository.findById(tournament.config.id!);
-        expect(saved).toBeDefined();
-        expect(saved!.config.id).toBe(tournament.config.id);
-    });
-
-    it('sollte ein Turnier starten, Logos verarbeiten und speichern', async () => {
-        const initialTournament = await service.createNewTournament(config);
-        const teamsData = [
-            { name: 'Team A', group: 'A', logo: 'data:image/webp;base64,UklGRgA=' },
-            { name: 'Team B', group: 'A', logo: 'logo.png' }
-        ];
-        
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
-
-        const startedTournament = await service.startTournament(initialTournament.config.id!, teamsData);
-
-        expect(startedTournament.status).toBe('playing');
-        expect(startedTournament.rounds.length).toBe(1);
-        expect(writeFileSpy).toHaveBeenCalledTimes(1);
-
-        const saved = await repository.findById(initialTournament.config.id!);
-        expect(saved!.teams[0].logo).toContain('/uploads/');
-        expect(saved!.teams[1].logo).toBe('logo.png');
-    });
-
-    it('sollte die Konfiguration eines Turniers im "setup"-Status aktualisieren', async () => {
-        const tournament = await service.createNewTournament(config);
-        const newConfigData = { tournamentName: 'Neuer Name' };
-
-        const updatedTournament = await service.updateTournamentConfig(tournament.config.id!, newConfigData);
-
-        expect(updatedTournament.config.tournamentName).toBe('Neuer Name');
-        const saved = await repository.findById(tournament.config.id!);
-        expect(saved!.config.tournamentName).toBe('Neuer Name');
-    });
-
-    it('sollte einen Fehler werfen, wenn versucht wird, die Konfiguration eines gestarteten Turniers zu ändern', async () => {
-        const tournament = await service.createNewTournament(config);
-        await service.startTournament(tournament.config.id!, []);
-
-        const newConfigData = { tournamentName: 'Anderer Name' };
-        
-        await expect(
-            service.updateTournamentConfig(tournament.config.id!, newConfigData)
-        ).rejects.toThrow("Configuration can only be edited before the tournament has started.");
-    });
-    
-    it('sollte ein neues Turnier erstellen und ein Turnierbild als Datei speichern', async () => {
-        const configWithImage = {
-            ...config,
-            imageUrl: 'data:image/jpeg;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-        };
-        const writeFileSpy = jest.spyOn(fs, 'writeFile');
-
-        const tournament = await service.createNewTournament(configWithImage);
-
-        expect(writeFileSpy).toHaveBeenCalled();
-        expect(tournament.config.imageUrl).toContain('/uploads/' + tournament.config.id + '/header.jpeg');
     });
 });
