@@ -29,14 +29,11 @@ jobs:
         working-directory: ./backend
       - name: Create Test Env File & Run API Tests
         run: |
-          cp backend/.env.test backend/.env
-          # KORREKTUR: docker-compose -> docker compose
+          # KORREKTUR: Kopiere die .env-Datei in das Hauptverzeichnis
+          cp backend/.env.test ./.env
           docker compose up --build -d db backend
-          # KORREKTUR: docker-compose -> docker compose
           until docker compose exec -T db pg_isready --username=$POSTGRES_USER; do sleep 2; done
-          # KORREKTUR: docker-compose -> docker compose
           docker compose exec -T backend npm run test:api
-          # KORREKTUR: docker-compose -> docker compose
           docker compose down
         env:
           POSTGRES_USER: testuser

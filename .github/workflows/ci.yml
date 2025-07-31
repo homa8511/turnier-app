@@ -55,13 +55,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Create Test Environment File
-        run: cp backend/.env.test backend/.env
+        # KORREKTUR: Kopiere die .env-Datei in das Hauptverzeichnis
+        run: cp backend/.env.test ./.env
       - name: Build and Run Docker Compose
-        # KORREKTUR: docker-compose -> docker compose
         run: docker compose up --build -d db backend
       - name: Wait for Database to be ready
         run: >
-          # KORREKTUR: docker-compose -> docker compose
           until docker compose exec -T db pg_isready --username=$POSTGRES_USER; do
             echo "Waiting for database...";
             sleep 2;
@@ -69,9 +68,7 @@ jobs:
         env:
           POSTGRES_USER: testuser
       - name: Run API Tests
-        # KORREKTUR: docker-compose -> docker compose
         run: docker compose exec -T backend npm run test:api
       - name: Shutdown Docker Compose
         if: always()
-        # KORREKTUR: docker-compose -> docker compose
         run: docker compose down
