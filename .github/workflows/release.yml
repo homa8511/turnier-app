@@ -15,14 +15,17 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
-          # KORREKTUR: Explizite Pfade für den Cache
           cache-dependency-path: |
             frontend/package-lock.json
             backend/package-lock.json
-      - name: Install & Run Backend Unit Tests
-        run: |
-          npm install
-          npm test
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: ./frontend
+      - name: Install Backend Dependencies
+        run: npm install
+        working-directory: ./backend
+      - name: Run Backend Unit Tests
+        run: npm test
         working-directory: ./backend
       - name: Create Test Env File & Run API Tests
         run: |
