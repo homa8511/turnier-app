@@ -1,4 +1,16 @@
 services:
+  test-runner:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    env_file:
+      - ./.env
+    networks:
+      - turnier-netzwerk
+    depends_on:
+      db:
+        condition: service_healthy
+
   backend:
     build:
       context: ./backend
@@ -7,8 +19,6 @@ services:
     restart: always
     env_file:
       - ./.env
-    environment:
-      - POSTGRES_HOST=db
     networks:
       - turnier-netzwerk
     volumes:

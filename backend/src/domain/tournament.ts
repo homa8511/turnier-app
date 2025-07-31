@@ -177,19 +177,24 @@ export class Tournament {
 
     private assignTimesAndFields(round: Round): void {
         if (round.matches.length === 0) {
-            return; // KORREKTUR: Funktion beenden, wenn keine Spiele vorhanden sind
+            return;
         }
 
         const { numFields, matchDuration, pauseDuration, startDate, startTime } = this.config;
         
-        let roundStartTime = this.nextRoundStartTime;
-        if (!roundStartTime) {
+        let roundStartTime: Date;
+        if (this.nextRoundStartTime) {
+            roundStartTime = new Date(this.nextRoundStartTime);
+        } else {
             const startDateTimeString = `${startDate}T${startTime}`;
             roundStartTime = new Date(startDateTimeString);
         }
         this.nextRoundStartTime = roundStartTime;
 
-        const fieldAvailability = new Array(numFields + 1).fill(roundStartTime);
+        const fieldAvailability: Date[] = [];
+        for (let i = 0; i <= numFields; i++) {
+            fieldAvailability.push(new Date(roundStartTime.getTime()));
+        }
         
         const groupNames = Object.keys(this.groups);
         const fieldsPerGroup: { [key: string]: number[] } = {};
