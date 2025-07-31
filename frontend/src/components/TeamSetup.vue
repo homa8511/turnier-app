@@ -5,7 +5,7 @@
             <div v-for="(group, index) in groups" :key="index" class="group-container border-t-2 pt-6 border-gray-200 dark:border-gray-700">
                 <div class="mb-4">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gruppenname (optional)</label>
-                    <input type="text" v-model="group.name" class="group-name-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
+                    <input v-model="group.name" type="text" class="group-name-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div v-for="team in group.teams" :key="team.id" class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 p-2 rounded-lg">
@@ -13,7 +13,7 @@
                             <img :src="team.logoPreview" alt="Team Logo" class="w-10 h-10 rounded-full object-cover">
                             <input type="file" class="hidden" accept="image/jpeg, image/webp" @change="event => handleImageUpload(event, team)">
                         </label>
-                        <input type="text" v-model="team.name" class="team-name-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500">
+                        <input v-model="team.name" type="text" class="team-name-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500">
                     </div>
                 </div>
             </div>

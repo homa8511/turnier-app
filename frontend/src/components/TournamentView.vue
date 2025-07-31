@@ -5,7 +5,7 @@
                 <img :src="state.config.imageUrl" alt="Turnierbild" class="w-full h-48 md:h-64 object-cover rounded-xl shadow-lg">
             </div>
             <h1 id="display-tournament-name" class="text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">{{ state.config.tournamentName }}</h1>
-            <div id="display-location" class="mt-2 text-md text-gray-500 dark:text-gray-400" v-if="state.config.location && state.config.location.name">
+            <div v-if="state.config.location && state.config.location.name" id="display-location" class="mt-2 text-md text-gray-500 dark:text-gray-400">
                 {{ state.config.location.name }} - {{ state.config.location.address }}
             </div>
             <!-- Die Verwendung von v-html ist hier sicher, da der Inhalt vom Organisator stammt -->
