@@ -11,7 +11,7 @@ import { errorHandler } from './interfaces/errorHandler';
 const app = express();
 const port = 3000;
 
-const swaggerDocument = YAML.load(path.join(__dirname, '../../openapi.yaml'));
+const swaggerDocument = YAML.load(path.join(__dirname, '../openapi.yaml'));
 
 app.use(helmet());
 
