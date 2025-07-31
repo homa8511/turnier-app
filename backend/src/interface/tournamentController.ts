@@ -41,12 +41,14 @@ tournamentRouter.route('/:id/config')
             }
             const tournament = await service.updateTournamentConfig(req.params.id, req.body.config);
             res.status(200).json(tournament);
-        } catch (err: any) {
-            if (err.message.includes("not found")) {
-                return res.status(404).json({ error: err.message });
-            }
-            if (err.message.includes("before the tournament has started")) {
-                return res.status(403).json({ error: err.message });
+        } catch (err) {
+            if (err instanceof Error) {
+                if (err.message.includes("not found")) {
+                    return res.status(404).json({ error: err.message });
+                }
+                if (err.message.includes("before the tournament has started")) {
+                    return res.status(403).json({ error: err.message });
+                }
             }
             next(err);
         }
@@ -60,8 +62,8 @@ tournamentRouter.route('/:id/start')
             }
             const tournament = await service.startTournament(req.params.id, req.body.teams);
             res.status(200).json(tournament);
-        } catch (err: any) {
-            if (err.message.includes("not found")) {
+        } catch (err) {
+            if (err instanceof Error && err.message.includes("not found")) {
                 return res.status(404).json({ error: err.message });
             }
             next(err);
@@ -77,12 +79,14 @@ tournamentRouter.route('/:id/matches')
             }
             const tournament = await service.recordMatchResult(req.params.id, roundNumber, team1Id, team2Id, score1, score2);
             res.status(200).json(tournament);
-        } catch (err: any) {
-            if (err.message.includes("not found")) {
-                return res.status(404).json({ error: err.message });
-            }
-            if (err.message.includes("cannot be negative")) {
-                return res.status(400).json({ error: err.message });
+        } catch (err) {
+            if (err instanceof Error) {
+                if (err.message.includes("not found")) {
+                    return res.status(404).json({ error: err.message });
+                }
+                if (err.message.includes("cannot be negative")) {
+                    return res.status(400).json({ error: err.message });
+                }
             }
             next(err);
         }
@@ -93,12 +97,14 @@ tournamentRouter.route('/:id/next-round')
         try {
             const tournament = await service.advanceToNextRound(req.params.id);
             res.status(200).json(tournament);
-        } catch (err: any) {
-            if (err.message.includes("not found")) {
-                return res.status(404).json({ error: err.message });
-            }
-            if (err.message.includes("all matches in the current round are complete")) {
-                return res.status(400).json({ error: err.message });
+        } catch (err) {
+            if (err instanceof Error) {
+                if (err.message.includes("not found")) {
+                    return res.status(404).json({ error: err.message });
+                }
+                if (err.message.includes("all matches in the current round are complete")) {
+                    return res.status(400).json({ error: err.message });
+                }
             }
             next(err);
         }

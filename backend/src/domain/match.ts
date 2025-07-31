@@ -1,26 +1,21 @@
-export class Match {
-    public readonly team1Id: number;
-    public readonly team2Id: number;
-    public score1: number | null = null;
-    public score2: number | null = null;
-    public field?: number;
-    public startTime?: Date;
-    public endTime?: Date;
+import { Match } from '../../domain/match';
 
-    constructor(team1Id: number, team2Id: number) {
-        this.team1Id = team1Id;
-        this.team2Id = team2Id;
-    }
+describe('Match Entity', () => {
+    it('sollte ein Ergebnis korrekt speichern', () => {
+        const match = new Match(1, 2);
+        match.recordResult(3, 0);
+        expect(match.score1).toBe(3);
+        expect(match.score2).toBe(0);
+        expect(match.isComplete()).toBe(true);
+    });
 
-    public recordResult(score1: number, score2: number): void {
-        if (score1 < 0 || score2 < 0) {
-            throw new Error("Scores cannot be negative.");
-        }
-        this.score1 = score1;
-        this.score2 = score2;
-    }
+    it('sollte einen Fehler bei negativen Ergebnissen werfen', () => {
+        const match = new Match(1, 2);
+        expect(() => match.recordResult(-1, 0)).toThrow("Scores cannot be negative.");
+    });
 
-    public isComplete(): boolean {
-        return this.score1 !== null && this.score2 !== null;
-    }
-}
+    it('sollte als unvollständig gelten, wenn kein Ergebnis vorliegt', () => {
+        const match = new Match(1, 2);
+        expect(match.isComplete()).toBe(false);
+    });
+});
