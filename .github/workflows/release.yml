@@ -1,55 +1,55 @@
 name: Release & Publish
 
 on:
-  push:
+  # Löst den Workflow aus, wenn der CI-Workflow erfolgreich abgeschlossen wurde
+  workflow_run:
+    workflows: ["Backend CI, Linting & Code Analysis"] # Muss exakt dem 'name' der ci.yml entsprechen
+    types:
+      - completed
     branches:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      # ... (Schritte zum Installieren der Abhängigkeiten bleiben gleich)
-      - name: Create Test Env File & Run API Tests
-        run: |
-          cp backend/.env.test ./.env
-          # Verwendet jetzt die neue Test-Compose-Datei
-          docker compose -f docker-compose.test.yml up --build -d
-          until docker compose -f docker-compose.test.yml exec -T db pg_isready --username=$POSTGRES_USER; do sleep 2; done
-          # Der npm install Schritt ist nicht mehr nötig!
-          docker compose -f docker-compose.test.yml exec -T backend npm run test:api
-          docker compose -f docker-compose.test.yml down
-        env:
-          POSTGRES_USER: testuser
-
   release-and-publish:
-    needs: test
+    # Führt den Job nur aus, wenn der auslösende Workflow erfolgreich war
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    
     strategy:
       matrix:
         project: [frontend, backend]
+
     permissions:
       contents: write
       issues: write
       pull-requests: write
       packages: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout correct commit
+        uses: actions/checkout@v4
+        with:
+          # Checkt den exakten Commit aus, der den CI-Workflow ausgelöst hat
+          ref: ${{ github.event.workflow_run.head_sha }}
+
       - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           cache: 'npm'
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
       - name: Install dependencies
         run: npm install
         working-directory: ./${{ matrix.project }}
+
       - name: Run semantic-release
         id: semantic
         run: npx semantic-release
         working-directory: ./${{ matrix.project }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Log in to GitHub Container Registry
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/login-action@v3
@@ -57,15 +57,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract metadata for Docker
         if: steps.semantic.outputs.new_release_published == 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/turnier-manager-${{ matrix.project }}
+          images: ghcr.io/${{ github.repository_owner }}/turnier-app-${{ matrix.project }}
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
+
       - name: Build and push Docker image
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/build-push-action@v5
