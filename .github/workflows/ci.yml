@@ -49,7 +49,7 @@ jobs:
         run: npm test
         working-directory: ./backend
 
-  aapi-tests:
+  api-tests:
     needs: lint
     runs-on: ubuntu-latest
     steps:
