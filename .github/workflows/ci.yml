@@ -61,35 +61,27 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
       
-      - name: Install Backend Dependencies
+      - name: Install Backend Dependencies on Runner
         run: npm install
         working-directory: ./backend
 
       - name: Create Test Environment File
         run: cp backend/.env.test ./.env
 
-      - name: Start Database Service
-        # Startet NUR den 'db'-Dienst aus der Haupt-Compose-Datei
-        run: docker compose up -d db
+      - name: Build and Start Docker Services
+        run: docker compose -f docker-compose.ci.yml up --build -d
 
-      - name: Wait for Database to be ready
+      - name: Wait for Backend Service to be healthy
         run: >
-          until docker compose exec -T db pg_isready --username=$POSTGRES_USER; do
-            echo "Waiting for database...";
-            sleep 2;
+          until [ "$(docker inspect -f {{.State.Health.Status}} $(docker compose -f docker-compose.ci.yml ps -q backend))" = "healthy" ]; do
+            echo "Waiting for backend service...";
+            sleep 5;
           done
-        env:
-          POSTGRES_USER: testuser
-      
-      - name: Set DB Host for Tests on Runner
-        # Setzt die Umgebungsvariable für den nächsten Schritt
-        run: echo "POSTGRES_HOST=localhost" >> $GITHUB_ENV
 
-      - name: Run API Tests
-        # Führt die Tests direkt auf dem Runner aus
+      - name: Run API Tests on Runner
         run: npm run test:api
         working-directory: ./backend
         
-      - name: Shutdown Database Service
+      - name: Shutdown Docker Services
         if: always()
-        run: docker compose down
+        run: docker compose -f docker-compose.ci.yml down

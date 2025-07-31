@@ -7,13 +7,15 @@ services:
     restart: always
     env_file:
       - ./.env
-    # NEU: Setzt den Hostnamen für die Datenbank explizit für die CI-Umgebung
     environment:
       - POSTGRES_HOST=db
     networks:
       - turnier-netzwerk
     volumes:
       - uploads_data:/usr/src/app/uploads
+    # Gibt den Port des Backends für den Runner (Host) frei
+    ports:
+      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
