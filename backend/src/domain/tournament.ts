@@ -34,16 +34,16 @@ export class Tournament {
     public config: TournamentConfig;
     public nextRoundStartTime: Date | null = null;
 
-    constructor(initialState: any) {
+    constructor(initialState: Partial<Tournament>) {
         Object.assign(this, { ...initialState, teams: [], rounds: [] });
         
         if (initialState.teams) {
-            this.teams = initialState.teams.map((t: any) => Object.assign(new Team(t.id, t.name, t.group, t.logo), t));
+            this.teams = initialState.teams.map((t: Team) => Object.assign(new Team(t.id, t.name, t.group, t.logo), t));
         }
 
         if (initialState.rounds) {
-            this.rounds = initialState.rounds.map((r: any) => {
-                const matches = r.matches.map((m: any) => Object.assign(new Match(m.team1Id, m.team2Id), m));
+            this.rounds = initialState.rounds.map((r: Round) => {
+                const matches = r.matches.map((m: Match) => Object.assign(new Match(m.team1Id, m.team2Id), m));
                 return new Round(r.roundNumber, matches);
             });
         }
@@ -112,7 +112,7 @@ export class Tournament {
 
         this.recalculateAllStandings();
 
-        let allNextMatches: Match[] = [];
+        const allNextMatches: Match[] = [];
         for (const groupName in this.groups) {
             const pairings = this.findPairingsForGroup(groupName);
             if (!pairings) throw new Error(`Could not generate pairings for group ${groupName}.`);
@@ -127,7 +127,7 @@ export class Tournament {
     }
     
     private generateFirstRound(): void {
-        let allMatches: Match[] = [];
+        const allMatches: Match[] = [];
         for (const groupName in this.groups) {
             const groupTeamIds = [...this.groups[groupName]];
             
