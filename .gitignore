@@ -6,6 +6,7 @@ backend/node_modules
 backend/dist
 frontend/node_modules
 frontend/dist
+node_modules
 
 # Hochgeladene Dateien lokal nicht versionieren
 backend/uploads

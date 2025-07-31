@@ -1,0 +1,21 @@
+{
+  "name": "turnier-app-monorepo",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.7"
+  },
+  "lint-staged": {
+    "backend/src/**/*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "frontend/src/**/*.{vue,ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}
