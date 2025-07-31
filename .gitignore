@@ -1,0 +1,11 @@
+# Sensible Umgebungsvariablen
+.env
+
+# Node.js Abhängigkeiten & Build-Artefakte
+backend/node_modules
+backend/dist
+frontend/node_modules
+frontend/dist
+
+# Hochgeladene Dateien lokal nicht versionieren
+backend/uploads

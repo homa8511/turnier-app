@@ -1,0 +1,49 @@
+services:
+  backend:
+    image: ghcr.io/${IMAGE_OWNER:-dein-benutzer}/${APP_NAME:-turnier-manager}-backend:${TAG:-latest}
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    networks:
+      - turnier-netzwerk
+    volumes:
+      - uploads_data:/usr/src/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: ghcr.io/${IMAGE_OWNER:-dein-benutzer}/${APP_NAME:-turnier-manager}-frontend:${TAG:-latest}
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - turnier-netzwerk
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  db:
+    image: postgres:${POSTGRES_VERSION:-15-alpine}
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - turnier-netzwerk
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  turnier-netzwerk:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  uploads_data:

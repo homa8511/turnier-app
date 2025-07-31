@@ -1,0 +1,19 @@
+# Git-Verzeichnis ignorieren
+.git
+.gitignore
+
+# Node.js Abhängigkeiten (werden im Container installiert)
+node_modules
+
+# Build-Artefakte (werden im Container erstellt)
+dist
+
+# Lokale Konfigurations- und Testdateien
+.env
+.env.test
+
+# TypeScript-Quellcode im finalen Image nicht benötigt
+src
+
+# Laufzeit-Uploads (sollen nur im Volume existieren, nicht im Image)
+uploads

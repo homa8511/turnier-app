@@ -1,0 +1,8 @@
+# Build-Artefakte
+dist
+
+# Node-Module
+node_modules
+
+# Laufzeit-Uploads
+uploads

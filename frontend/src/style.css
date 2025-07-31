@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+.view-mode-btn-active {
+    background-color: #3B82F6;
+    color: white;
+}

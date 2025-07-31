@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: Turnier-Manager API
+  description: API zur Verwaltung von Fußballturnieren im Schweizer System.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Lokaler Server
+paths:
+  /tournaments:
+    post:
+      summary: Erstellt ein neues Turnier.
+      description: Nimmt die Grundkonfiguration entgegen und erstellt ein neues Turnier im 'setup'-Status mit einer einzigartigen ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config:
+                  $ref: '#/components/schemas/TournamentConfigInput'
+      responses:
+        '201':
+          description: Turnier erfolgreich erstellt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tournament'
+        '400':
+          description: Ungültige Eingabe.
+  /tournaments/{id}:
+    get:
+      summary: Lädt ein bestehendes Turnier.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 'T-A4B1C2'
+      responses:
+        '200':
+          description: Turnierdaten erfolgreich geladen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tournament'
+        '404':
+          description: Turnier nicht gefunden.
+  /tournaments/{id}/config:
+    put:
+      summary: Aktualisiert die Konfiguration eines Turniers.
+      description: Kann nur ausgeführt werden, solange das Turnier im 'setup'-Status ist.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config:
+                  $ref: '#/components/schemas/TournamentConfigInput'
+      responses:
+        '200':
+          description: Konfiguration erfolgreich aktualisiert.
+        '403':
+          description: Aktion nicht erlaubt (z.B. Turnier bereits gestartet).
+        '404':
+          description: Turnier nicht gefunden.
+  /tournaments/{id}/start:
+    post:
+      summary: Startet ein konfiguriertes Turnier.
+      description: Nimmt die Teamdaten entgegen, lost die erste Runde aus und versetzt das Turnier in den 'playing'-Status.
+      responses:
+        '200':
+          description: Turnier erfolgreich gestartet.
+  /tournaments/{id}/matches:
+    post:
+      summary: Speichert ein Spielergebnis.
+      responses:
+        '200':
+          description: Ergebnis erfolgreich gespeichert.
+  /tournaments/{id}/next-round:
+    post:
+      summary: Generiert die nächste Spielrunde.
+      responses:
+        '200':
+          description: Nächste Runde erfolgreich generiert.
+        '400':
+          description: Voraussetzung nicht erfüllt (z.B. aktuelle Runde nicht beendet).
+components:
+  schemas:
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Sportanlage am Park'
+        address:
+          type: string
+          example: 'Musterstraße 1, 12345 Beispielstadt'
+    TournamentConfigInput:
+      type: object
+      properties:
+        tournamentName:
+          type: string
+          example: 'Sommer-Cup 2025'
+        location:
+          $ref: '#/components/schemas/Location'
+        description:
+          type: string
+          example: '<b>Willkommen!</b>'
+        imageUrl:
+          type: string
+          format: uri
+          description: "Pfad zum Bild oder Base64-String beim Upload."
+        numGroups:
+          type: integer
+        teamsPerGroup:
+          type: integer
+        numFields:
+          type: integer
+        matchDuration:
+          type: integer
+        pauseDuration:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        startTime:
+          type: string
+          example: '09:00'
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        logo:
+          type: string
+          format: uri
+    Tournament:
+      type: object
+      properties:
+        config:
+          $ref: '#/components/schemas/TournamentConfigInput'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        rounds:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+          enum: [config, setup, playing, finished]

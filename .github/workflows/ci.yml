@@ -1,0 +1,86 @@
+name: Backend CI, Linting & Code Analysis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    name: Lint Frontend & Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 22
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install & Lint Backend
+        run: |
+          npm install
+          npm run lint
+        working-directory: ./backend
+      - name: Install & Lint Frontend
+        run: |
+          npm install
+          npm run lint
+        working-directory: ./frontend
+
+  unit-tests:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 22
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - name: Install Backend Dependencies
+        run: npm install
+        working-directory: ./backend
+      - name: Run Backend Unit Tests
+        run: npm test
+        working-directory: ./backend
+
+  api-tests:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create Test Environment File
+        run: cp backend/.env.test backend/.env
+      - name: Build and Run Docker Compose
+        run: docker-compose up --build -d db backend
+      - name: Wait for Database to be ready
+        run: >
+          until docker-compose exec -T db pg_isready --username=$POSTGRES_USER; do
+            echo "Waiting for database...";
+            sleep 2;
+          done
+        env:
+          POSTGRES_USER: testuser
+      - name: Run API Tests
+        run: docker-compose exec -T backend npm run test:api
+      - name: Shutdown Docker Compose
+        if: always()
+        run: docker-compose down
+
+  sonarcloud-analysis:
+    needs: [unit-tests, api-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: backend
