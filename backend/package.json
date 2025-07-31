@@ -9,7 +9,7 @@
     "build": "tsc",
     "dev": "ts-node src/server.ts",
     "test": "jest --config jest.config.js",
-    "test:api": "jest --config jest.config.api.js --runInBand",
+    "test:api": "node --max-old-space-size=4096 ./node_modules/.bin/jest --config jest.config.api.js --runInBand",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
   },
