@@ -1,9 +1,8 @@
 name: Release & Publish
 
 on:
-  # Löst den Workflow aus, wenn der CI-Workflow erfolgreich abgeschlossen wurde
   workflow_run:
-    workflows: ["Backend CI, Linting & Code Analysis"] # Muss exakt dem 'name' der ci.yml entsprechen
+    workflows: ["Backend CI, Linting & Code Analysis"]
     types:
       - completed
     branches:
@@ -11,7 +10,6 @@ on:
 
 jobs:
   release-and-publish:
-    # Führt den Job nur aus, wenn der auslösende Workflow erfolgreich war
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     
@@ -29,7 +27,6 @@ jobs:
       - name: Checkout correct commit
         uses: actions/checkout@v4
         with:
-          # Checkt den exakten Commit aus, der den CI-Workflow ausgelöst hat
           ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Use Node.js 22

@@ -7,6 +7,9 @@ services:
     restart: always
     env_file:
       - ./.env
+    # NEU: Setzt den Hostnamen für die Datenbank explizit für die CI-Umgebung
+    environment:
+      - POSTGRES_HOST=db
     networks:
       - turnier-netzwerk
     volumes:

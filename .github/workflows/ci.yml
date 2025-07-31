@@ -48,7 +48,7 @@ jobs:
       - name: Run Backend Unit Tests
         run: npm test
         working-directory: ./backend
-
+ 
   api-tests:
     needs: lint
     runs-on: ubuntu-latest
@@ -69,6 +69,7 @@ jobs:
         run: cp backend/.env.test ./.env
 
       - name: Start Database Service
+        # Startet NUR den 'db'-Dienst aus der Haupt-Compose-Datei
         run: docker compose up -d db
 
       - name: Wait for Database to be ready
@@ -81,9 +82,11 @@ jobs:
           POSTGRES_USER: testuser
       
       - name: Set DB Host for Tests on Runner
+        # Setzt die Umgebungsvariable für den nächsten Schritt
         run: echo "POSTGRES_HOST=localhost" >> $GITHUB_ENV
 
       - name: Run API Tests
+        # Führt die Tests direkt auf dem Runner aus
         run: npm run test:api
         working-directory: ./backend
         
