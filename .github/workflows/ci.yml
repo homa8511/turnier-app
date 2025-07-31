@@ -57,22 +57,19 @@ jobs:
       - name: Create Test Environment File
         run: cp backend/.env.test ./.env
       - name: Build and Run Docker Compose services for testing
-        run: docker compose -f docker-compose.ci.yml up --build -d
+        # Verwendet jetzt die neue Test-Compose-Datei
+        run: docker compose -f docker-compose.test.yml up --build -d
       - name: Wait for Database to be ready
         run: >
-          until docker compose -f docker-compose.ci.yml exec -T db pg_isready --username=$POSTGRES_USER; do
+          until docker compose -f docker-compose.test.yml exec -T db pg_isready --username=$POSTGRES_USER; do
             echo "Waiting for database...";
             sleep 2;
           done
         env:
           POSTGRES_USER: testuser
-      
-      # --- NEUER SCHRITT ---
-      - name: Install dev dependencies in container for testing
-        run: docker compose -f docker-compose.ci.yml exec -T backend npm install
-
       - name: Run API Tests
-        run: docker compose -f docker-compose.ci.yml exec -T backend npm run test:api
+        # Der npm install Schritt ist nicht mehr nötig!
+        run: docker compose -f docker-compose.test.yml exec -T backend npm run test:api
       - name: Shutdown Docker Compose
         if: always()
-        run: docker compose -f docker-compose.ci.yml down
+        run: docker compose -f docker-compose.test.yml down
