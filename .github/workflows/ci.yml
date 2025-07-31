@@ -68,7 +68,7 @@ jobs:
         env:
           POSTGRES_USER: testuser
       - name: Run API Tests
-        # Der npm install Schritt ist nicht mehr nötig!
+        # Der speicherintensive npm install Schritt ist nicht mehr nötig!
         run: docker compose -f docker-compose.test.yml exec -T backend npm run test:api
       - name: Shutdown Docker Compose
         if: always()
