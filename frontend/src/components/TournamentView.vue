@@ -8,8 +8,8 @@
             <div v-if="state.config.location && state.config.location.name" id="display-location" class="mt-2 text-md text-gray-500 dark:text-gray-400">
                 {{ state.config.location.name }} - {{ state.config.location.address }}
             </div>
-            <!-- Die Verwendung von v-html ist hier sicher, da der Inhalt vom Organisator stammt -->
-            <div v-if="state.config.description" class="prose prose-sm dark:prose-invert max-w-none mx-auto mt-4 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg" v-html="state.config.description">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div v-if="state.config.description" class="prose prose-sm dark:prose-invert max-w-none mx-auto mt-4 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg" v-html="sanitizedDescription">
             </div>
             <div class="mt-4 text-sm text-gray-500 dark:text-gray-400 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
                 <span>Turnier-ID: <strong class="select-all">{{ state.config.id }}</strong></span>
@@ -59,6 +59,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import DOMPurify from 'dompurify';
 import { store } from '../store';
 import { generateNextRound } from '../api';
 import StandingsTable from './StandingsTable.vue';
@@ -66,6 +67,10 @@ import MatchList from './MatchList.vue';
 import Swal from 'sweetalert2';
 
 const { state } = store;
+
+const sanitizedDescription = computed(() => {
+    return DOMPurify.sanitize(state.config.description || '');
+});
 
 const isViewingPast = computed(() => state.viewingRound < state.currentRound);
 
