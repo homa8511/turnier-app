@@ -10,3 +10,6 @@ node_modules
 
 # Hochgeladene Dateien lokal nicht versionieren
 backend/uploads
+
+# Test-Coverage-Berichte
+backend/coverage
