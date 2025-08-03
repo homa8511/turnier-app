@@ -1,6 +1,6 @@
 # Stufe 1: Build-Umgebung
 # Verwende eine spezifische, aktuelle Version für Reproduzierbarkeit und Sicherheit
-FROM node:22.4.0-alpine AS builder
+FROM node:22.17.1-alpine AS builder
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm run build
 
 # Stufe 2: Produktions-Umgebung
 # Verwende eine spezifische, aktuelle Version
-FROM nginx:1.27.0-alpine
+FROM nginx:1.29.0-alpine
 
 # --- Pakete aktualisieren und Cache leeren ---
 RUN apk update && apk upgrade && \
