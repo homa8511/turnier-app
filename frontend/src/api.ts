@@ -1,4 +1,3 @@
-src/api.ts (Korrigiert)
 import Swal from 'sweetalert2';
 import type { Tournament, TournamentConfig } from './types';
 
