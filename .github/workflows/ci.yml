@@ -34,6 +34,9 @@ jobs:
   unit-tests:
     needs: lint
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [frontend, backend]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 22
@@ -41,41 +44,25 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-      - name: Install Backend Dependencies
+          cache-dependency-path: ${{ matrix.target }}/package-lock.json
+      - name: Install Dependencies
         run: npm install
-        working-directory: ./backend
-      - name: Run Backend Unit Tests
-        run: npm test
-        working-directory: ./backend
-      - name: Upload Unit Test Coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-unit-test-coverage
-          path: backend/coverage/unit
-
-  frontend-unit-tests:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-      - name: Install Frontend Dependencies
-        run: npm install
-        working-directory: ./frontend
-      - name: Run Frontend Unit Tests
-        run: npm run coverage
-        working-directory: ./frontend
-      - name: Upload Unit Test Coverage
+        working-directory: ./${{ matrix.target }}
+      - name: Run Unit Tests
+        run: npm run ${{ matrix.target == 'frontend' && 'coverage' || 'test' }}
+        working-directory: ./${{ matrix.target }}
+      - name: Upload Frontend Unit Test Coverage
+        if: matrix.target == 'frontend'
         uses: actions/upload-artifact@v4
         with:
           name: frontend-unit-test-coverage
           path: frontend/coverage
+      - name: Upload Backend Unit Test Coverage
+        if: matrix.target == 'backend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-unit-test-coverage
+          path: backend/coverage/unit
 
   api-tests:
     needs: lint
@@ -120,7 +107,7 @@ jobs:
         run: docker compose -f docker-compose.ci.yml down
         
   sonarcloud-analysis:
-    needs: [unit-tests, api-tests, frontend-unit-tests]
+    needs: [unit-tests, api-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
