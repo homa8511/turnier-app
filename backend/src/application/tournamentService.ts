@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export class TournamentService {
-    constructor(private tournamentRepository: TournamentRepository) {}
+    constructor(private readonly tournamentRepository: TournamentRepository) {}
 
     async createNewTournament(config: Omit<TournamentConfig, 'id'>): Promise<Tournament> {
         const tournament = Tournament.create(config);
