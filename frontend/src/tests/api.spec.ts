@@ -32,7 +32,7 @@ const mockTournament: Tournament = {
 
 global.fetch = vi.fn()
 
-function createFetchResponse(data: any, ok = true, status = 200) {
+function createFetchResponse(data: unknown, ok = true, status = 200) {
   return {
     ok,
     status,

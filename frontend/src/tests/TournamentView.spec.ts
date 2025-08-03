@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import TournamentView from '../components/TournamentView.vue'
 import { store } from '../store'
 import * as api from '../api'
-import Swal from 'sweetalert2'
 
 vi.mock('../api')
 vi.mock('sweetalert2')
@@ -29,12 +28,12 @@ describe('TournamentView.vue', () => {
     store.state.teams = [
       { id: 1, name: 'Team A', group: 'Group A' },
       { id: 2, name: 'Team B', group: 'Group A' }
-    ] as any
+    ]
     store.state.groups = { 'Group A': [1, 2] }
     store.state.rounds = [
       { roundNumber: 1, matches: [{ team1Id: 1, team2Id: 2, score1: 1, score2: 0 }] },
       { roundNumber: 2, matches: [{ team1Id: 1, team2Id: 2, score1: null, score2: null }] },
-    ] as any
+    ]
     store.state.currentRound = 2
     store.state.viewingRound = 2
     vi.clearAllMocks()
@@ -73,7 +72,7 @@ describe('TournamentView.vue', () => {
 
   it('calls generateNextRound when action button is clicked', async () => {
     store.state.rounds[1].matches[0].score1 = 1 // Finish the match
-    const mockGenerate = vi.mocked(api.generateNextRound).mockResolvedValue({} as any)
+    const mockGenerate = vi.mocked(api.generateNextRound).mockResolvedValue({} as never)
     const wrapper = mount(TournamentView)
 
     await wrapper.find('#action-button').trigger('click')

@@ -75,17 +75,17 @@ describe('TeamSetup.vue', () => {
     // Mock FileReader
     const mockReader = {
       onload: vi.fn(),
-      readAsDataURL: vi.fn().mockImplementation(function(this: any) {
+      readAsDataURL: vi.fn().mockImplementation(function(this: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         this.onload({ target: { result: 'data:image/png;base64,mock' } })
       })
     }
     vi.stubGlobal('FileReader', vi.fn(() => mockReader))
 
-    const fileInput = wrapper.find('input[type="file"]')
     const file = new File([''], 'logo.png', { type: 'image/png' })
 
     // We can't set the value of a file input directly for security reasons.
     // So we'll have to trigger the change handler manually with a mocked event.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const component = wrapper.vm as any
     const team = component.groups[0].teams[0]
     const event = { target: { files: [file] } }

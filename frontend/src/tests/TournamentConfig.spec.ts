@@ -38,7 +38,7 @@ describe('TournamentConfig.vue', () => {
 
   it('calls createTournament when not editing', async () => {
     store.state.isEditingConfig = false
-    const mockCreateTournament = vi.mocked(api.createTournament).mockResolvedValue({} as any)
+    const mockCreateTournament = vi.mocked(api.createTournament).mockResolvedValue({} as never)
     const wrapper = mount(TournamentConfig)
 
     await wrapper.find('button.bg-blue-600').trigger('click')
@@ -49,7 +49,7 @@ describe('TournamentConfig.vue', () => {
   it('calls updateTournamentConfig when editing', async () => {
     store.state.isEditingConfig = true
     store.state.config.id = 'test-id'
-    const mockUpdate = vi.mocked(api.updateTournamentConfig).mockResolvedValue({} as any)
+    const mockUpdate = vi.mocked(api.updateTournamentConfig).mockResolvedValue({} as never)
     const wrapper = mount(TournamentConfig)
 
     await wrapper.find('button.bg-blue-600').trigger('click')
@@ -64,12 +64,13 @@ describe('TournamentConfig.vue', () => {
     // Mock FileReader
     const mockReader = {
       onload: vi.fn(),
-      readAsDataURL: vi.fn().mockImplementation(function(this: any) {
+      readAsDataURL: vi.fn().mockImplementation(function(this: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         this.onload({ target: { result: 'data:image/jpeg;base64,mock' } })
       })
     }
     vi.stubGlobal('FileReader', vi.fn(() => mockReader))
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const component = wrapper.vm as any
     const file = new File([''], 'image.jpg', { type: 'image/jpeg' })
     const event = { target: { files: [file] } }

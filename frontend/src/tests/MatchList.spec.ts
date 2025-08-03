@@ -34,7 +34,6 @@ describe('MatchList.vue', () => {
     const wrapper = mount(MatchList, { attachTo: document.body }) // attachTo body for getElementById
     await wrapper.vm.$nextTick()
 
-    const groups = wrapper.findAll('.group-container h3')
     // This test is a bit complex because of the component's structure.
     // Let's just check if the correct number of match cards are rendered.
     expect(wrapper.findAllComponents({ name: 'MatchCard' }).length).toBe(3)
@@ -50,7 +49,7 @@ describe('MatchList.vue', () => {
   })
 
   it('calls recordResult on save', async () => {
-    const mockRecordResult = vi.mocked(api.recordResult).mockResolvedValue({} as any)
+    const mockRecordResult = vi.mocked(api.recordResult).mockResolvedValue({} as never)
     const wrapper = mount(MatchList)
 
     const mockInput1 = { value: '2' } as HTMLInputElement
@@ -62,6 +61,7 @@ describe('MatchList.vue', () => {
       return null
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const component = wrapper.vm as any
     await component.save(match1)
 
@@ -87,6 +87,7 @@ describe('MatchList.vue', () => {
       return null
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const component = wrapper.vm as any
     component.edit(match1)
 
