@@ -65,11 +65,11 @@ describe('api.ts', () => {
 
   describe('createTournament', () => {
     it('should send a POST request and return the new tournament', async () => {
-      const { id, ...configWithoutId } = createMockConfig({
+      const { ...configWithoutId } = createMockConfig({
         tournamentName: 'New Cup',
       });
       const mockTournament = createMockTournament({
-        config: { ...configWithoutId, id },
+        config: { ...configWithoutId, id: 'new-id' },
       });
 
       fetchMock.mockResolvedValue({
@@ -88,7 +88,7 @@ describe('api.ts', () => {
     });
 
     it('should throw an error on failure', async () => {
-      const { id, ...configWithoutId } = createMockConfig({
+      const { ...configWithoutId } = createMockConfig({
         tournamentName: 'New Cup',
       });
       fetchMock.mockResolvedValue({

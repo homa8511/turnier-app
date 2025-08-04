@@ -21,7 +21,6 @@
       >
         {{ state.config.location.name }} - {{ state.config.location.address }}
       </div>
-      <!-- eslint-disable-next-line vue/no-v-html -->
       <div
         v-if="state.config.description"
         class="prose prose-sm dark:prose-invert max-w-none mx-auto mt-4 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg"

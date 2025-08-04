@@ -54,8 +54,7 @@ describe('TeamSetup.vue', () => {
     const firstTeamInput = wrapper.find('.team-name-input');
     await firstTeamInput.setValue('New Awesome Team');
 
-    const componentVm = wrapper.vm as any;
-    expect(componentVm.groups[0].teams[0].name).toBe('New Awesome Team');
+    expect(wrapper.vm.groups[0].teams[0].name).toBe('New Awesome Team');
   });
 
   it('should call setEditingConfig when "Konfiguration bearbeiten" is clicked', async () => {
@@ -73,9 +72,8 @@ describe('TeamSetup.vue', () => {
       await wrapper.vm.$nextTick();
 
       // Customize team names for the test
-      const componentVm = wrapper.vm as any;
-      componentVm.groups[0].teams[0].name = 'Team One';
-      componentVm.groups[1].teams[1].name = 'Team Four';
+      wrapper.vm.groups[0].teams[0].name = 'Team One';
+      wrapper.vm.groups[1].teams[1].name = 'Team Four';
 
       const startTournamentSpy = vi
         .spyOn(api, 'startTournament')
@@ -99,8 +97,7 @@ describe('TeamSetup.vue', () => {
       const startTournamentSpy = vi.spyOn(api, 'startTournament');
 
       // Set a team name to be empty
-      const componentVm = wrapper.vm as any;
-      componentVm.groups[0].teams[0].name = '';
+      wrapper.vm.groups[0].teams[0].name = '';
 
       const startButton = wrapper.find('button.bg-blue-600');
       await startButton.trigger('click');

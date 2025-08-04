@@ -73,9 +73,7 @@ describe('MatchList.vue', () => {
   it('should compute matches by group correctly', async () => {
     store.state.matchViewMode = 'group';
     await wrapper.vm.$nextTick();
-    const componentVm = wrapper.vm as any;
-
-    const groupedMatches = componentVm.matchesByGroup;
+    const groupedMatches = wrapper.vm.matchesByGroup;
     expect(Object.keys(groupedMatches)).toEqual(['Group 1', 'Group 2']);
 
     // Group 1 gets the intra-group match AND the cross-group match because team1 (ID 1) is in Group 1
@@ -95,9 +93,7 @@ describe('MatchList.vue', () => {
   it('should compute chronological matches correctly', async () => {
     store.state.matchViewMode = 'chrono';
     await wrapper.vm.$nextTick();
-    const componentVm = wrapper.vm as any;
-
-    const chronoMatches = componentVm.chronologicalMatches;
+    const chronoMatches = wrapper.vm.chronologicalMatches;
     expect(chronoMatches.length).toBe(3);
     // Sorted by time, then field
     expect(chronoMatches[0].team1Id).toBe(3); // 09:00 Field 1
