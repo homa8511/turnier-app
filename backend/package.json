@@ -14,7 +14,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.0.0",
     "express": "^5.0.0",
     "express-rate-limit": "^7.3.1",
     "helmet": "^8.0.0",
