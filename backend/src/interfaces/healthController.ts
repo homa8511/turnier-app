@@ -8,6 +8,7 @@ healthRouter.get('/', async (req: Request, res: Response) => {
         await pool.query('SELECT 1');
         res.status(200).json({ status: 'ok', database: 'connected' });
     } catch (err) {
+        console.error('Health check failed:', err);
         res.status(503).json({ status: 'error', database: 'disconnected' });
     }
 });
