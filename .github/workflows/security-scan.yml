@@ -40,7 +40,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       - name: Create GitHub Issue on failure
         if: failure() && steps.trivy-scan.outcome == 'failure'
-        uses: actions/create-issue@v5
+        uses: actions/create-issue@v4
         with:
           title: '🛡️ Sicherheits-Scan fehlgeschlagen für ${{ matrix.project }}'
           body: |
