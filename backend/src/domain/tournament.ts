@@ -162,8 +162,7 @@ export class Tournament {
         const team1 = unpairedTeams[0];
         const remainingTeams = unpairedTeams.slice(1);
 
-        for (let i = 0; i < remainingTeams.length; i++) {
-            const team2 = remainingTeams[i];
+        for (const team2 of remainingTeams) {
             if (!team1.opponents.includes(team2.id)) {
                 const nextUnpairedTeams = remainingTeams.filter(t => t.id !== team2.id);
                 const result = this.solvePairings(nextUnpairedTeams);
