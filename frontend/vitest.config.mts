@@ -14,7 +14,7 @@ export default mergeConfig(
       setupFiles: [],
       coverage: {
         provider: 'v8',
-        reporter: ['text', 'json', 'html'],
+        reporter: ['text', 'json', 'html', 'lcov'],
         lines: 80,
         functions: 80,
         branches: 80,
