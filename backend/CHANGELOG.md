@@ -1,3 +1,10 @@
+## [1.6.5](https://github.com/homa8511/turnier-app/compare/v1.6.4...v1.6.5) (2025-08-04)
+
+
+### Bug Fixes
+
+* **frontend:** Correct semantic-release config loading ([#85](https://github.com/homa8511/turnier-app/issues/85)) ([dc5be8c](https://github.com/homa8511/turnier-app/commit/dc5be8c57ff5e74124ad09e07000d138108d0285))
+
 ## [1.6.4](https://github.com/homa8511/turnier-app/compare/v1.6.3...v1.6.4) (2025-08-04)
 
 
