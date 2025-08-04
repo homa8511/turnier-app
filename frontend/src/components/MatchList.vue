@@ -134,4 +134,9 @@ function edit(match: Match) {
   score1Input.disabled = false;
   score2Input.disabled = false;
 }
+
+defineExpose({
+  matchesByGroup,
+  chronologicalMatches,
+});
 </script>

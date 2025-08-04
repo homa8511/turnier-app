@@ -66,3 +66,15 @@ export interface AppState extends Tournament {
   isLoading: boolean;
   isEditingConfig: boolean;
 }
+
+export interface TeamData {
+  id: number;
+  name: string;
+  logo: string;
+  logoPreview: string;
+}
+
+export interface GroupData {
+  name: string;
+  teams: TeamData[];
+}

@@ -7,6 +7,7 @@ WORKDIR /app
 # Zuerst nur package.json kopieren, um den Cache von Docker zu nutzen
 COPY package*.json ./
 RUN npm install
+RUN npm install @tailwindcss/postcss
 
 # Den gesamten Quellcode kopieren
 COPY . .

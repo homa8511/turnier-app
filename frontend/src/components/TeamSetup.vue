@@ -74,18 +74,7 @@ import { ref, onMounted } from 'vue';
 import { store } from '../store';
 import { startTournament } from '../api';
 import Swal from 'sweetalert2';
-
-interface TeamData {
-  id: number;
-  name: string;
-  logo: string;
-  logoPreview: string;
-}
-
-interface GroupData {
-  name: string;
-  teams: TeamData[];
-}
+import type { TeamData, GroupData } from '../types';
 
 const { state } = store;
 const groups = ref<GroupData[]>([]);
@@ -164,4 +153,8 @@ async function start() {
     store.setLoading(false);
   }
 }
+
+defineExpose({
+  groups,
+});
 </script>

@@ -20,7 +20,7 @@ vi.mock('sweetalert2', () => ({
 // Mock the global fetch
 const fetchMock = vi.fn();
 beforeEach(() => {
-  global.fetch = fetchMock;
+  vi.stubGlobal('fetch', fetchMock);
 });
 
 afterEach(() => {
@@ -30,8 +30,9 @@ afterEach(() => {
 describe('api.ts', () => {
   // Helper to create a full TournamentConfig object for mocking
   const createMockConfig = (
-    overrides: Partial<Omit<TournamentConfig, 'id'>> = {}
-  ): Omit<TournamentConfig, 'id'> => ({
+    overrides: Partial<TournamentConfig> = {}
+  ): TournamentConfig => ({
+    id: 'mock-config-id',
     tournamentName: 'Mock Tournament',
     location: { name: 'Mock Location', address: '123 Mock St' },
     description: 'A mock description',
@@ -50,17 +51,13 @@ describe('api.ts', () => {
   const createMockTournament = (
     overrides: Partial<Tournament> = {}
   ): Tournament => ({
-    id: 'mock-id',
-    config: createMockConfig(),
+    config: createMockConfig(overrides.config),
     status: 'config',
     teams: [],
     groups: {},
     rounds: [],
     currentRound: 0,
     viewingRound: 0,
-    isReadOnly: false,
-    isLoading: false,
-    isEditingConfig: false,
     matchViewMode: 'group',
     nextRoundStartTime: null,
     ...overrides,
@@ -68,32 +65,40 @@ describe('api.ts', () => {
 
   describe('createTournament', () => {
     it('should send a POST request and return the new tournament', async () => {
-      const config = createMockConfig({ tournamentName: 'New Cup' });
-      const mockTournament = createMockTournament({ config });
+      const { ...configWithoutId } = createMockConfig({
+        tournamentName: 'New Cup',
+      });
+      const mockTournament = createMockTournament({
+        config: { ...configWithoutId, id: 'new-id' },
+      });
 
       fetchMock.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTournament),
       });
 
-      const result = await createTournament(config);
+      const result = await createTournament(configWithoutId);
 
       expect(fetchMock).toHaveBeenCalledWith('/api/tournaments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ config }),
+        body: JSON.stringify({ config: configWithoutId }),
       });
       expect(result).toEqual(mockTournament);
     });
 
     it('should throw an error on failure', async () => {
-      const config = createMockConfig({ tournamentName: 'New Cup' });
+      const { ...configWithoutId } = createMockConfig({
+        tournamentName: 'New Cup',
+      });
       fetchMock.mockResolvedValue({
         ok: false,
         json: () => Promise.resolve({ error: 'Creation failed' }),
       });
 
-      await expect(createTournament(config)).rejects.toThrow('Creation failed');
+      await expect(createTournament(configWithoutId)).rejects.toThrow(
+        'Creation failed'
+      );
     });
   });
 
@@ -101,8 +106,8 @@ describe('api.ts', () => {
     it('should send a POST request with teams and return the started tournament', async () => {
       const teams = [{ name: 'Team A', group: 'A', logo: '' }];
       const mockTournament = createMockTournament({
-        id: 'test-id',
         status: 'playing',
+        config: createMockConfig({ id: 'test-id' }),
       });
 
       fetchMock.mockResolvedValue({
@@ -130,7 +135,9 @@ describe('api.ts', () => {
         score1: 3,
         score2: 1,
       };
-      const mockTournament = createMockTournament({ id: 'test-id' });
+      const mockTournament = createMockTournament({
+        config: createMockConfig({ id: 'test-id' }),
+      });
 
       fetchMock.mockResolvedValue({
         ok: true,
@@ -154,8 +161,8 @@ describe('api.ts', () => {
   describe('generateNextRound', () => {
     it('should send a POST request to generate the next round', async () => {
       const mockTournament = createMockTournament({
-        id: 'test-id',
         currentRound: 2,
+        config: createMockConfig({ id: 'test-id' }),
       });
 
       fetchMock.mockResolvedValue({
@@ -180,7 +187,9 @@ describe('api.ts', () => {
       const partialConfig: Partial<Omit<TournamentConfig, 'id'>> = {
         tournamentName: 'Updated Cup',
       };
-      const mockTournament = createMockTournament({ id: 'test-id' });
+      const mockTournament = createMockTournament({
+        config: createMockConfig({ id: 'test-id' }),
+      });
 
       fetchMock.mockResolvedValue({
         ok: true,
@@ -213,7 +222,9 @@ describe('api.ts', () => {
     });
 
     it('should fetch and return a tournament on success', async () => {
-      const mockTournament = createMockTournament({ id: 'test-id' });
+      const mockTournament = createMockTournament({
+        config: createMockConfig({ id: 'test-id' }),
+      });
       fetchMock.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTournament),
