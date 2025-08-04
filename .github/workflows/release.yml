@@ -20,9 +20,12 @@ jobs:
       with:
         filters: |
           frontend:
-            - 'frontend/src/**'
+            - 'frontend/**'
+            - '!frontend/src/tests/**'
+            - '!frontend/src/components/tests/**'
           backend:
-            - 'backend/src/**'
+            - 'backend/**'
+            - '!backend/src/__tests__/**'
 
   release-frontend:
     needs: changes
