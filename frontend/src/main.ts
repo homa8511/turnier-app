@@ -18,7 +18,6 @@ async function initializeApp() {
 
   if (hostMatch) {
     tournamentId = hostMatch[1];
-    isReadOnly = false;
   } else if (viewMatch) {
     tournamentId = viewMatch[1];
     isReadOnly = true;
