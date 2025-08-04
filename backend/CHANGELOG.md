@@ -1,3 +1,10 @@
+## [1.6.4](https://github.com/homa8511/turnier-app/compare/v1.6.3...v1.6.4) (2025-08-04)
+
+
+### Bug Fixes
+
+* **frontend:** Use RegExp.exec() instead of String.match() ([#84](https://github.com/homa8511/turnier-app/issues/84)) ([9d6e88a](https://github.com/homa8511/turnier-app/commit/9d6e88a6f95aaebbf07745c005bc50421aa5efe3))
+
 ## [1.6.3](https://github.com/homa8511/turnier-app/compare/v1.6.2...v1.6.3) (2025-08-04)
 
 
