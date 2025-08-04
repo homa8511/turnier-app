@@ -1,3 +1,15 @@
+## [1.6.3](https://github.com/homa8511/turnier-app/compare/v1.6.2...v1.6.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v17 ([#77](https://github.com/homa8511/turnier-app/issues/77)) ([4fe9a41](https://github.com/homa8511/turnier-app/commit/4fe9a415e698ed49b0882f52a7a66b84a3b37c63))
+* **deps:** update dependency express to v5 ([#78](https://github.com/homa8511/turnier-app/issues/78)) ([3beefbf](https://github.com/homa8511/turnier-app/commit/3beefbf933432de719501ff587c20af32ab784d2))
+* **deps:** update dependency express-rate-limit to v8 ([#79](https://github.com/homa8511/turnier-app/issues/79)) ([c9f9180](https://github.com/homa8511/turnier-app/commit/c9f9180aeb55523c5a5ef7080515925523394424))
+* **deps:** update dependency helmet to v8 ([#80](https://github.com/homa8511/turnier-app/issues/80)) ([ea438a3](https://github.com/homa8511/turnier-app/commit/ea438a364cddeffbf4c99c70ce9eff6c0673369f))
+* **deps:** update dependency uuid to v11 ([#81](https://github.com/homa8511/turnier-app/issues/81)) ([d4001a3](https://github.com/homa8511/turnier-app/commit/d4001a3ba22aaab6a2035174b1b84ba77e5f3afe))
+* **health:** log error in health check controller ([#76](https://github.com/homa8511/turnier-app/issues/76)) ([4803c26](https://github.com/homa8511/turnier-app/commit/4803c261aeff5e04df991f95905182bbccf07277))
+
 ## [1.6.2](https://github.com/homa8511/turnier-app/compare/v1.6.1...v1.6.2) (2025-08-04)
 
 
