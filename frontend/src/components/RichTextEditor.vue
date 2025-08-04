@@ -49,6 +49,7 @@
       </button>
     </div>
     <div
+      :id="id"
       ref="editor"
       class="p-3 min-h-[100px] bg-white dark:bg-gray-800 rounded-b-lg focus:outline-none"
       contenteditable="true"
@@ -62,6 +63,7 @@ import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps<{
   modelValue?: string;
+  id?: string;
 }>();
 
 const emit = defineEmits(['update:modelValue']);

@@ -13,10 +13,12 @@
       >
         <div class="mb-4">
           <label
+            :for="`group-name-${index}`"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >Gruppenname (optional)</label
           >
           <input
+            :id="`group-name-${index}`"
             v-model="group.name"
             type="text"
             class="group-name-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600"
