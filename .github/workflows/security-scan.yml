@@ -32,23 +32,8 @@ jobs:
         uses: aquasecurity/trivy-action@0.32.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/turnier-app-${{ matrix.project }}:latest'
-          format: 'template'
-          template: '@$HOME/.local/bin/trivy-bin/contrib/github.tpl'
-          output: 'trivy-results.md'
+          format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-      - name: Create GitHub Issue on failure
-        if: failure() && steps.trivy-scan.outcome == 'failure'
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: 'create-issue'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: '🛡️ Sicherheits-Scan fehlgeschlagen für ${{ matrix.project }}'
-          body: |
-            Der automatische Trivy-Scan hat eine oder mehrere kritische/hohe Schwachstellen im Docker-Image für **${{ matrix.project }}** (Tag: `latest`) gefunden.
-            Bitte überprüfen Sie die Details unten und aktualisieren Sie die betroffenen Abhängigkeiten.
-            ### Scan-Ergebnisse
-            ${{ steps.trivy-scan.outputs.result }}
-          labels: security,vulnerability
