@@ -73,7 +73,7 @@ describe('MatchList.vue', () => {
   it('should compute matches by group correctly', async () => {
     store.state.matchViewMode = 'group';
     await wrapper.vm.$nextTick();
-    const componentVm = wrapper.vm as { matchesByGroup: { [key: string]: Match[] } };
+    const componentVm = wrapper.vm as any;
 
     const groupedMatches = componentVm.matchesByGroup;
     expect(Object.keys(groupedMatches)).toEqual(['Group 1', 'Group 2']);
@@ -95,7 +95,7 @@ describe('MatchList.vue', () => {
   it('should compute chronological matches correctly', async () => {
     store.state.matchViewMode = 'chrono';
     await wrapper.vm.$nextTick();
-    const componentVm = wrapper.vm as { chronologicalMatches: Match[] };
+    const componentVm = wrapper.vm as any;
 
     const chronoMatches = componentVm.chronologicalMatches;
     expect(chronoMatches.length).toBe(3);

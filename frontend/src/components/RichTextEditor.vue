@@ -70,7 +70,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const editor = ref<HTMLDivElement | null>(null);
 
-function execCmd(command: string, value: string | null = null) {
+function execCmd(command: string, value?: string) {
   document.execCommand(command, false, value);
   editor.value?.focus();
   updateContent();

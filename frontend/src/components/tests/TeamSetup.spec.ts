@@ -14,17 +14,7 @@ vi.mock('sweetalert2', () => ({
   },
 }));
 
-interface TeamData {
-  id: number;
-  name: string;
-  logo: string;
-  logoPreview: string;
-}
 
-interface GroupData {
-  name: string;
-  teams: TeamData[];
-}
 
 describe('TeamSetup.vue', () => {
   let wrapper: VueWrapper<InstanceType<typeof TeamSetup>>;
@@ -55,7 +45,7 @@ describe('TeamSetup.vue', () => {
     expect(wrapper.find<HTMLInputElement>('.group-name-input').element.value).toBe(
       'Gruppe A'
     );
-    expect(teamInputs[0].element.value).toBe('Team A1');
+    expect((teamInputs[0].element as HTMLInputElement).value).toBe('Team A1');
   });
 
   it('should update team name when user types in an input', async () => {
@@ -64,7 +54,7 @@ describe('TeamSetup.vue', () => {
     const firstTeamInput = wrapper.find('.team-name-input');
     await firstTeamInput.setValue('New Awesome Team');
 
-    const componentVm = wrapper.vm as { groups: GroupData[] };
+    const componentVm = wrapper.vm as any;
     expect(componentVm.groups[0].teams[0].name).toBe('New Awesome Team');
   });
 
@@ -83,7 +73,7 @@ describe('TeamSetup.vue', () => {
       await wrapper.vm.$nextTick();
 
       // Customize team names for the test
-      const componentVm = wrapper.vm as { groups: GroupData[] };
+      const componentVm = wrapper.vm as any;
       componentVm.groups[0].teams[0].name = 'Team One';
       componentVm.groups[1].teams[1].name = 'Team Four';
 
@@ -109,7 +99,7 @@ describe('TeamSetup.vue', () => {
       const startTournamentSpy = vi.spyOn(api, 'startTournament');
 
       // Set a team name to be empty
-      const componentVm = wrapper.vm as { groups: GroupData[] };
+      const componentVm = wrapper.vm as any;
       componentVm.groups[0].teams[0].name = '';
 
       const startButton = wrapper.find('button.bg-blue-600');
