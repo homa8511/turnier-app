@@ -1,75 +1,89 @@
 name: Release & Publish
 
 on:
-  workflow_run:
-    workflows: ["Backend CI, Linting & Code Analysis"]
-    types:
-      - completed
+  push:
     branches:
       - main
 
 jobs:
-  release-and-publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  changes:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        project: [frontend, backend]
+    permissions:
+      pull-requests: read
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          frontend:
+            - 'frontend/src/**'
+          backend:
+            - 'backend/src/**'
 
+  release-frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       issues: write
       pull-requests: write
       packages: write
-
     steps:
-      - name: Checkout correct commit
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
 
       - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           cache: 'npm'
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./${{ matrix.project }}
+        working-directory: ./frontend
 
       - name: Run semantic-release
-        id: semantic
         run: npx semantic-release
-        working-directory: ./${{ matrix.project }}
+        working-directory: ./frontend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Log in to GitHub Container Registry
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata for Docker
-        if: steps.semantic.outputs.new_release_published == 'true'
-        id: meta
-        uses: docker/metadata-action@v5
+  release-backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          images: ghcr.io/${{ github.repository_owner }}/turnier-app-${{ matrix.project }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=raw,value=latest
+          fetch-depth: 0
 
-      - name: Build and push Docker image
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: docker/build-push-action@v6
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
         with:
-          context: ./${{ matrix.project }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Run semantic-release
+        run: npx semantic-release
+        working-directory: ./backend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
