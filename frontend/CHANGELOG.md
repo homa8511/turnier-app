@@ -1,3 +1,10 @@
+## [1.6.6](https://github.com/homa8511/turnier-app/compare/v1.6.5...v1.6.6) (2025-08-04)
+
+
+### Bug Fixes
+
+* remove duplicated package-lock.json files ([649e86c](https://github.com/homa8511/turnier-app/commit/649e86c9951239f0057be808bcd251748f660041))
+
 # [1.6.0](https://github.com/homa8511/turnier-app/compare/v1.5.0...v1.6.0) (2025-08-04)
 
 
