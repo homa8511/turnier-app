@@ -107,7 +107,8 @@
     </div>
 
     <div id="view-mode-toggle" class="flex justify-center mb-6">
-      <div class="inline-flex rounded-md shadow-sm" role="group">
+      <fieldset class="inline-flex rounded-md shadow-sm">
+        <legend class="sr-only">Ansichtsmodus für Spiele</legend>
         <button
           type="button"
           class="view-mode-btn px-4 py-2 text-sm font-medium"
@@ -124,7 +125,7 @@
         >
           Chronologisch
         </button>
-      </div>
+      </fieldset>
     </div>
 
     <MatchList />
