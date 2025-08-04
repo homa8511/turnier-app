@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 body {
-    font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 .view-mode-btn-active {
-    background-color: #3B82F6;
-    color: white;
+  background-color: #3b82f6;
+  color: white;
 }
