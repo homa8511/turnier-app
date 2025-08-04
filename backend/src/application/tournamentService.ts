@@ -56,7 +56,7 @@ export class TournamentService {
     }
 
     private async processTournamentImage(tournament: Tournament): Promise<void> {
-        if (!tournament.config.id || !tournament.config.imageUrl || !tournament.config.imageUrl.startsWith('data:image/')) {
+        if (!tournament.config.id || !tournament.config.imageUrl?.startsWith('data:image/')) {
             return;
         }
         
@@ -80,7 +80,7 @@ export class TournamentService {
         await fs.mkdir(tournamentUploadDir, { recursive: true });
 
         for (const team of tournament.teams) {
-            if (team.logo && team.logo.startsWith('data:image/')) {
+            if (team.logo?.startsWith('data:image/')) {
                 const base64Data = team.logo.replace(/^data:image\/\w+;base64,/, "");
                 const buffer = Buffer.from(base64Data, 'base64');
                 const fileExtension = team.logo.substring(team.logo.indexOf('/') + 1, team.logo.indexOf(';base64'));
