@@ -10,8 +10,8 @@ async function initializeApp() {
   const hostRegex = /^\/host\/event\/([a-zA-Z0-9-]+)/;
   const viewRegex = /^\/event\/([a-zA-Z0-9-]+)/;
 
-  const hostMatch = path.match(hostRegex);
-  const viewMatch = path.match(viewRegex);
+  const hostMatch = hostRegex.exec(path);
+  const viewMatch = viewRegex.exec(path);
 
   let tournamentId: string | null = null;
   let isReadOnly = false;
