@@ -21,7 +21,9 @@
       </div>
 
       <div class="md:col-span-2">
-        <label class="block mb-2 text-sm font-medium"
+        <label
+          for="tournament-image-upload"
+          class="block mb-2 text-sm font-medium"
           >Turnierbild (optional)</label
         >
         <div class="mt-1 flex items-center gap-4">
@@ -85,10 +87,14 @@
 
       <div class="md:col-span-2">
         <label
+          for="description-editor"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >Beschreibung (optional)</label
         >
-        <RichTextEditor v-model="state.config.description" />
+        <RichTextEditor
+          id="description-editor"
+          v-model="state.config.description"
+        />
       </div>
 
       <div
