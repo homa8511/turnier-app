@@ -2,7 +2,8 @@
   "name": "turnier-app-monorepo",
   "private": true,
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:frontend": "cd frontend && npm test"
   },
   "devDependencies": {
     "husky": "^9.0.0",
