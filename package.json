@@ -7,7 +7,6 @@
     "backend"
   ],
   "scripts": {
-    "prepare": "husky install",
     "test:frontend": "cd frontend && npm test",
     "release": "semantic-release"
   },
