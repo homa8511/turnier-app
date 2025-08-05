@@ -27,9 +27,9 @@ jobs:
             - 'backend/**'
             - '!backend/src/__tests__/**'
 
-  release-frontend:
+  release:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: needs.changes.outputs.frontend == 'true' || needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,46 +47,11 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./frontend
 
       - name: Run semantic-release
         run: npx semantic-release
-        working-directory: ./frontend
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-backend:
-    needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      packages: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./backend
-
-      - name: Run semantic-release
-        run: npx semantic-release
-        working-directory: ./backend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

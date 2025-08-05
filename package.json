@@ -1,13 +1,26 @@
 {
   "name": "turnier-app-monorepo",
   "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
     "prepare": "husky install",
-    "test:frontend": "cd frontend && npm test"
+    "test:frontend": "cd frontend && npm test",
+    "release": "semantic-release"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.1",
     "husky": "^9.0.0",
-    "lint-staged": "^16.0.0"
+    "lint-staged": "^16.0.0",
+    "semantic-release": "^24.0.0"
   },
   "lint-staged": {
     "backend/src/**/*.{ts,js}": [
