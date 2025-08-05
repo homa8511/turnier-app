@@ -1,3 +1,10 @@
+## [1.6.8](https://github.com/homa8511/turnier-app/compare/v1.6.7...v1.6.8) (2025-08-05)
+
+
+### Bug Fixes
+
+* Correct trigger for docker image build ([#97](https://github.com/homa8511/turnier-app/issues/97)) ([0502f1c](https://github.com/homa8511/turnier-app/commit/0502f1c2873882ea3d7282e12cb30e168ee1f356))
+
 ## [1.6.7](https://github.com/homa8511/turnier-app/compare/v1.6.6...v1.6.7) (2025-08-05)
 
 
