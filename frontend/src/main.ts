@@ -35,7 +35,7 @@ async function initializeApp() {
     store.setLoading(false);
   }
 
-  createApp(App).mount('#app');
+  createApp(App as any).mount('#app');
 }
 
-initializeApp();
+void initializeApp();

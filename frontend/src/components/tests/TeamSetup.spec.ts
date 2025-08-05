@@ -16,6 +16,24 @@ vi.mock('sweetalert2', () => ({
 
 
 
+vi.mock('sweetalert2', () => ({
+  default: {
+    fire: vi.fn(),
+  },
+}));
+
+interface TeamSetupExposed {
+  groups: {
+    name: string;
+    teams: {
+      id: number;
+      name: string;
+      logo: string;
+      logoPreview: string;
+    }[];
+  }[];
+}
+
 describe('TeamSetup.vue', () => {
   let wrapper: VueWrapper<InstanceType<typeof TeamSetup>>;
 
@@ -33,7 +51,7 @@ describe('TeamSetup.vue', () => {
   });
 
   it('should render the correct number of groups and teams on mount', async () => {
-    await wrapper.vm.$nextTick(); // Wait for onMounted hook
+    await (wrapper.vm as any).$nextTick(); // Wait for onMounted hook
 
     const groupContainers = wrapper.findAll('.group-container');
     expect(groupContainers.length).toBe(2);
@@ -49,16 +67,16 @@ describe('TeamSetup.vue', () => {
   });
 
   it('should update team name when user types in an input', async () => {
-    await wrapper.vm.$nextTick();
+    await (wrapper.vm as any).$nextTick();
 
     const firstTeamInput = wrapper.find('.team-name-input');
     await firstTeamInput.setValue('New Awesome Team');
 
-    expect(wrapper.vm.groups[0].teams[0].name).toBe('New Awesome Team');
+    expect((wrapper.vm as unknown as TeamSetupExposed).groups[0].teams[0].name).toBe('New Awesome Team');
   });
 
   it('should call setEditingConfig when "Konfiguration bearbeiten" is clicked', async () => {
-    await wrapper.vm.$nextTick();
+    await (wrapper.vm as any).$nextTick();
     const storeSpy = vi.spyOn(store, 'setEditingConfig');
 
     const editButton = wrapper.find('button.bg-gray-500'); // Find by color class
@@ -69,11 +87,11 @@ describe('TeamSetup.vue', () => {
 
   describe('start method', () => {
     it('should call startTournament API with correct data on success', async () => {
-      await wrapper.vm.$nextTick();
+      await (wrapper.vm as any).$nextTick();
 
       // Customize team names for the test
-      wrapper.vm.groups[0].teams[0].name = 'Team One';
-      wrapper.vm.groups[1].teams[1].name = 'Team Four';
+      (wrapper.vm as unknown as TeamSetupExposed).groups[0].teams[0].name = 'Team One';
+      (wrapper.vm as unknown as TeamSetupExposed).groups[1].teams[1].name = 'Team Four';
 
       const startTournamentSpy = vi
         .spyOn(api, 'startTournament')
@@ -93,11 +111,11 @@ describe('TeamSetup.vue', () => {
     });
 
     it('should show an error and not call API if a team name is blank', async () => {
-      await wrapper.vm.$nextTick();
+      await (wrapper.vm as any).$nextTick();
       const startTournamentSpy = vi.spyOn(api, 'startTournament');
 
       // Set a team name to be empty
-      wrapper.vm.groups[0].teams[0].name = '';
+      (wrapper.vm as unknown as TeamSetupExposed).groups[0].teams[0].name = '';
 
       const startButton = wrapper.find('button.bg-blue-600');
       await startButton.trigger('click');
