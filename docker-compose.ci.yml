@@ -3,6 +3,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.test
+      no_cache: true
+    command: "npm run test:api"
     env_file:
       - ./.env
     volumes:
