@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Tournament, TournamentConfig } from '../../domain/tournament';
 
 describe('Tournament Aggregate', () => {

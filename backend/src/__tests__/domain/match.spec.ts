@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Match } from '../../domain/match';
 
 describe('Match Entity', () => {

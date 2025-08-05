@@ -1,7 +1,8 @@
 import express from 'express';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
+import YAML from 'yaml';
+import fs from 'fs';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { initializeDatabase } from './infrastructure/database';
@@ -11,7 +12,8 @@ import { errorHandler } from './interfaces/errorHandler';
 const app = express();
 const port = 3000;
 
-const swaggerDocument = YAML.load(path.join(__dirname, '../openapi.yaml'));
+const file = fs.readFileSync(path.join(__dirname, '../openapi.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
 
 app.use(helmet());
 
