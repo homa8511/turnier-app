@@ -62,9 +62,9 @@ jobs:
           RELEASE_DATA=$(npx semantic-release)
           echo "Semantic release output:"
           echo "$RELEASE_DATA"
-          if [ -n "$RELEASE_DATA" ]; then
+          if echo "$RELEASE_DATA" | grep -q "The next release version is"; then
             echo "new_release_published=true" >> $GITHUB_OUTPUT
-            VERSION=$(echo "$RELEASE_DATA" | jq -r .version)
+            VERSION=$(echo "$RELEASE_DATA" | grep "The next release version is" | sed -e 's/.*The next release version is \([0-9.]*\).*/\1/')
             echo "version-next=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "new_release_published=false" >> $GITHUB_OUTPUT
