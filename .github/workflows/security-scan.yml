@@ -28,7 +28,6 @@ jobs:
       - name: Pull Docker image
         run: docker pull ghcr.io/${{ github.repository_owner }}/turnier-app-${{ matrix.project }}:latest
       - name: Run Trivy vulnerability scanner
-        id: trivy-scan
         uses: aquasecurity/trivy-action@0.32.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/turnier-app-${{ matrix.project }}:latest'
@@ -37,3 +36,10 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.md'
+
+      - name: Upload Trivy scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-trivy-report-${{ matrix.project }}
+          path: trivy-results.md
