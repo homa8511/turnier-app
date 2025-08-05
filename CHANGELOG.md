@@ -1,3 +1,10 @@
+## [1.6.14](https://github.com/homa8511/turnier-app/compare/v1.6.13...v1.6.14) (2025-08-05)
+
+
+### Bug Fixes
+
+* **ci:** updated npm packages ([a2cb715](https://github.com/homa8511/turnier-app/commit/a2cb7156d342f2e37c18972a27f020d5153b2bd8))
+
 ## [1.6.13](https://github.com/homa8511/turnier-app/compare/v1.6.12...v1.6.13) (2025-08-05)
 
 

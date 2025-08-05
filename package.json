@@ -1,7 +1,7 @@
 {
   "name": "turnier-app-monorepo",
   "private": true,
-  "version": "1.6.13",
+  "version": "1.6.14",
   "workspaces": [
     "frontend",
     "backend"
