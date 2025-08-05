@@ -38,7 +38,7 @@ jobs:
       packages: write
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      version-next: ${{ steps.semantic.outputs.version-next }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,10 +59,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if npx semantic-release; then
+          RELEASE_DATA=$(npx semantic-release)
+          echo "Semantic release output:"
+          echo "$RELEASE_DATA"
+          if echo "$RELEASE_DATA" | grep -q "The next release version is"; then
             echo "new_release_published=true" >> $GITHUB_OUTPUT
-            VERSION=$(node -p "require('./package.json').version")
-            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+            VERSION=$(echo "$RELEASE_DATA" | grep "The next release version is" | sed -e 's/.*The next release version is \([0-9.]*\).*/\1/')
+            echo "version-next=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "new_release_published=false" >> $GITHUB_OUTPUT
           fi
@@ -83,7 +86,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: 'v${{ needs.release.outputs.new_release_version }}'
+          ref: 'v${{ needs.release.outputs.version-next }}'
+          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -149,12 +153,12 @@ jobs:
           echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Pull Docker image for scanning
-        run: docker pull ghcr.io/${{ env.REPO_LC }}/${{ matrix.project }}:v${{ needs.release.outputs.new_release_version }}
+        run: docker pull ghcr.io/${{ env.REPO_LC }}/${{ matrix.project }}:v${{ needs.release.outputs.version-next }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/${{ env.REPO_LC }}/${{ matrix.project }}:v${{ needs.release.outputs.new_release_version }}
+          image-ref: ghcr.io/${{ env.REPO_LC }}/${{ matrix.project }}:v${{ needs.release.outputs.version-next }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -165,5 +169,5 @@ jobs:
       - name: Upload Trivy scan results
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-report-${{ matrix.project }}-v${{ needs.release.outputs.new_release_version }}
+          name: trivy-report-${{ matrix.project }}-v${{ needs.release.outputs.version-next }}
           path: trivy-results.md
