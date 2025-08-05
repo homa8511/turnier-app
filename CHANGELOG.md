@@ -1,11 +1,3 @@
-## [1.6.10](https://github.com/homa8511/turnier-app/compare/v1.6.9...v1.6.10) (2025-08-05)
-
-
-### Bug Fixes
-
-* **ci:** docker publish trigger ([f135bef](https://github.com/homa8511/turnier-app/commit/f135bef6e90d436251bfbdfe9f3a02d5acca0250))
-* **release:** use npx semantic-release and capture outputs ([#100](https://github.com/homa8511/turnier-app/issues/100)) ([146967f](https://github.com/homa8511/turnier-app/commit/146967f80240b36da96974ba79f2155a2fb4f7c6))
-
 ## [1.6.9](https://github.com/homa8511/turnier-app/compare/v1.6.8...v1.6.9) (2025-08-05)
 
 
