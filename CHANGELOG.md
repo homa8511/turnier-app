@@ -1,3 +1,10 @@
+## [1.6.11](https://github.com/homa8511/turnier-app/compare/v1.6.10...v1.6.11) (2025-08-05)
+
+
+### Bug Fixes
+
+* **ci:** semantic release action ([#101](https://github.com/homa8511/turnier-app/issues/101)) ([173eabb](https://github.com/homa8511/turnier-app/commit/173eabb8fbe0d930a69263e2863b470f511a1d96))
+
 ## [1.6.10](https://github.com/homa8511/turnier-app/compare/v1.6.9...v1.6.10) (2025-08-05)
 
 

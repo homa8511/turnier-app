@@ -1,6 +1,6 @@
 {
   "name": "turnier-backend",
-  "version": "1.6.10",
+  "version": "1.6.11",
   "private": true,
   "license": "CC-BY-NC-ND-4.0",
   "main": "dist/server.js",
