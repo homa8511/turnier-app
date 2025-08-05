@@ -56,16 +56,18 @@ jobs:
 
       - name: Semantic Release
         id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          semantic_version: 21
-          extra_plugins: |
-            @semantic-release/changelog@6
-            @semantic-release/npm@9
-            @semantic-release/git@10
-            @semantic-release/exec@8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release > semantic-release.log
+          cat semantic-release.log
+          if grep -q "Published release" semantic-release.log; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            VERSION=$(grep "Published release" semantic-release.log | sed -e 's/.*Published release \([0-9.]*\) on .*/\1/')
+            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
 
   build-and-push:
     needs: release
