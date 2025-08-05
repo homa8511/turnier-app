@@ -13,3 +13,4 @@ backend/uploads
 
 # Test-Coverage-Berichte
 backend/coverage
+frontend/coverage
