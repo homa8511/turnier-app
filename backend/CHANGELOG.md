@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/homa8511/turnier-app/compare/backend-v1.0.0...backend-v1.0.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* **frontend:** linter warnings regarding deprecated packages ([bd6f28f](https://github.com/homa8511/turnier-app/commit/bd6f28fb718c992daac2247073384365222a4162))
+
 # 1.0.0 (2025-08-05)
 
 
