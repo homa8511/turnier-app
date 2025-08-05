@@ -59,11 +59,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx semantic-release > semantic-release.log
-          cat semantic-release.log
-          if grep -q "Published release" semantic-release.log; then
+          if npx semantic-release; then
             echo "new_release_published=true" >> $GITHUB_OUTPUT
-            VERSION=$(grep "Published release" semantic-release.log | sed -e 's/.*Published release \([0-9.]*\) on .*/\1/')
+            VERSION=$(node -p "require('./package.json').version")
             echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "new_release_published=false" >> $GITHUB_OUTPUT
