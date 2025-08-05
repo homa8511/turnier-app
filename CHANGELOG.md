@@ -1,3 +1,10 @@
+## [1.6.9](https://github.com/homa8511/turnier-app/compare/v1.6.8...v1.6.9) (2025-08-05)
+
+
+### Bug Fixes
+
+* **ci:** add frontend/coverage to .gitignore again ([113bde8](https://github.com/homa8511/turnier-app/commit/113bde8781779c6379a50097f5b524eb4e68f26b))
+
 ## [1.6.8](https://github.com/homa8511/turnier-app/compare/v1.6.7...v1.6.8) (2025-08-05)
 
 
