@@ -235,7 +235,7 @@ function handleImageUpload(event: Event) {
 
   const allowedTypes = ['image/jpeg', 'image/webp'];
   if (!allowedTypes.includes(file.type)) {
-    Swal.fire(
+    void Swal.fire(
       'Fehler',
       'Ungültiger Dateityp. Bitte nur JPG oder WEBP.',
       'error'
@@ -244,7 +244,7 @@ function handleImageUpload(event: Event) {
   }
   if (file.size > 1 * 1024 * 1024) {
     // 1MB
-    Swal.fire('Fehler', 'Datei zu groß. Max. 1MB.', 'error');
+    void Swal.fire('Fehler', 'Datei zu groß. Max. 1MB.', 'error');
     return;
   }
 
@@ -275,9 +275,9 @@ async function goToTeamSetup() {
     );
   } catch (error) {
     if (error instanceof Error) {
-      Swal.fire('Fehler', error.message, 'error');
+      void Swal.fire('Fehler', error.message, 'error');
     } else {
-      Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+      void Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
     }
   } finally {
     store.setLoading(false);
@@ -297,9 +297,9 @@ async function saveChanges() {
     store.setEditingConfig(false);
   } catch (error) {
     if (error instanceof Error) {
-      Swal.fire('Fehler', error.message, 'error');
+      void Swal.fire('Fehler', error.message, 'error');
     } else {
-      Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+      void Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
     }
   } finally {
     store.setLoading(false);

@@ -52,7 +52,7 @@ describe('StandingsTable.vue', () => {
   beforeEach(() => {
     // Reset and populate the store's state before each test
     store.resetState();
-    store.state.teams = JSON.parse(JSON.stringify(teams));
+    store.state.teams = JSON.parse(JSON.stringify(teams)) as Team[];
   });
 
   it('should render the table with the group name', () => {

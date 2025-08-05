@@ -40,7 +40,7 @@ export const store = reactive<{
   setEditingConfig: (status: boolean) => void;
   resetState: () => void;
 }>({
-  state: JSON.parse(JSON.stringify(initialState)),
+  state: JSON.parse(JSON.stringify(initialState)) as AppState,
 
   setState(newState) {
     // ... (Logik zum Konvertieren von Date-Strings bleibt gleich)
@@ -57,6 +57,6 @@ export const store = reactive<{
     this.state.isEditingConfig = status;
   },
   resetState() {
-    this.state = JSON.parse(JSON.stringify(initialState));
+    this.state = JSON.parse(JSON.stringify(initialState)) as AppState;
   },
 });

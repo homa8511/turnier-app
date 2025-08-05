@@ -222,9 +222,9 @@ async function handleActionButtonClick() {
     store.setState(updatedTournament);
   } catch (error) {
     if (error instanceof Error) {
-      Swal.fire('Fehler', error.message, 'error');
+      void Swal.fire('Fehler', error.message, 'error');
     } else {
-      Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+      void Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
     }
   } finally {
     store.setLoading(false);
@@ -246,8 +246,8 @@ function copyLink(mode: 'host' | 'readonly') {
     successMessage = 'Admin-Link kopiert!';
   }
 
-  navigator.clipboard.writeText(textToCopy).then(() => {
-    Swal.fire({
+  void navigator.clipboard.writeText(textToCopy).then(() => {
+    void Swal.fire({
       toast: true,
       position: 'top-end',
       icon: 'success',

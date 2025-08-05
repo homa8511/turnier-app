@@ -3,12 +3,16 @@ import type { Tournament, TournamentConfig } from './types';
 
 const API_URL = '/api';
 
-async function handleResponse(response: Response): Promise<unknown> {
+interface ApiError {
+  error: string;
+}
+
+async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json() as ApiError;
     throw new Error(error.error || 'Ein Serverfehler ist aufgetreten.');
   }
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
 export async function createTournament(
@@ -19,7 +23,7 @@ export async function createTournament(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ config }),
   });
-  return handleResponse(response) as Promise<Tournament>;
+  return handleResponse<Tournament>(response);
 }
 
 export async function startTournament(
@@ -31,7 +35,7 @@ export async function startTournament(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ teams }),
   });
-  return handleResponse(response) as Promise<Tournament>;
+  return handleResponse<Tournament>(response);
 }
 
 export async function recordResult(
@@ -49,14 +53,14 @@ export async function recordResult(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(result),
   });
-  return handleResponse(response) as Promise<Tournament>;
+  return handleResponse<Tournament>(response);
 }
 
 export async function generateNextRound(id: string): Promise<Tournament> {
   const response = await fetch(`${API_URL}/tournaments/${id}/next-round`, {
     method: 'POST',
   });
-  return handleResponse(response) as Promise<Tournament>;
+  return handleResponse<Tournament>(response);
 }
 
 export async function updateTournamentConfig(
@@ -68,32 +72,32 @@ export async function updateTournamentConfig(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ config }),
   });
-  return handleResponse(response) as Promise<Tournament>;
+  return handleResponse<Tournament>(response);
 }
 
 export async function loadTournament(id: string): Promise<Tournament | null> {
   if (!id) {
-    Swal.fire('Fehler', 'Bitte geben Sie eine Turnier-ID ein.', 'warning');
+    void Swal.fire('Fehler', 'Bitte geben Sie eine Turnier-ID ein.', 'warning');
     return null;
   }
   try {
     const response = await fetch(`${API_URL}/tournaments/${id}`);
     if (!response.ok) {
       if (response.status === 404) {
-        Swal.fire(
+        void Swal.fire(
           'Fehler',
           `Kein Turnier mit der ID "${id}" gefunden.`,
           'error'
         );
       } else {
-        Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
+        void Swal.fire('Fehler', 'Ein unbekannter Fehler ist aufgetreten.', 'error');
       }
       return null;
     }
     return (await response.json()) as Tournament;
   } catch (e) {
     console.error('Laden fehlgeschlagen:', e);
-    Swal.fire(
+    void Swal.fire(
       'Fehler',
       'Die Turnierdaten konnten nicht vom Server geladen werden.',
       'error'
