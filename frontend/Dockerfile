@@ -1,6 +1,6 @@
 # Stufe 1: Build-Umgebung
 # Verwende eine spezifische, aktuelle Version für Reproduzierbarkeit und Sicherheit
-FROM node:22.18.0-alpine AS builder
+FROM node:22.19.0-alpine AS builder
 
 WORKDIR /app
 
