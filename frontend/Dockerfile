@@ -16,7 +16,7 @@ RUN npm run build
 
 # Stufe 2: Produktions-Umgebung
 # Verwende eine spezifische, aktuelle Version
-FROM nginx:1.29.2-alpine
+FROM nginx:1.29.3-alpine
 
 # --- Pakete aktualisieren und Cache leeren ---
 RUN apk update && apk upgrade && \
