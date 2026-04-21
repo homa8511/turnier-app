@@ -99,7 +99,7 @@ jobs:
           output: 'trivy-results.md'
 
       - name: Upload Trivy scan results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-report-${{ matrix.project }}-${{ github.ref_name }}
           path: trivy-results.md
