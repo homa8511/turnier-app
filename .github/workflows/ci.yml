@@ -59,13 +59,13 @@ jobs:
         working-directory: ./${{ matrix.service }}
       - name: Upload Unit Test Coverage
         if: matrix.service == 'frontend'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: frontend-unit-test-coverage
           path: ./frontend/coverage
       - name: Upload Unit Test Coverage
         if: matrix.service == 'backend'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: backend-unit-test-coverage
           path: ./backend/coverage/unit
@@ -103,7 +103,7 @@ jobs:
         run: docker compose -f docker-compose.ci.yml run --rm test-runner
 
       - name: Upload API Test Coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: api-test-coverage
           path: backend/coverage/api
@@ -120,17 +120,17 @@ jobs:
         with:
           fetch-depth: 0
       - name: Download Backend Unit Test Coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: backend-unit-test-coverage
           path: backend/coverage/unit
       - name: Download Frontend Unit Test Coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: frontend-unit-test-coverage
           path: frontend/coverage
       - name: Download API Test Coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: api-test-coverage
           path: backend/coverage/api
