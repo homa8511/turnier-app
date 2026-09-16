@@ -1,5 +1,5 @@
 # Argument mit Standard-Fallback definieren
-ARG NODE_VERSION=22-alpine
+ARG NODE_VERSION=24-alpine
 
 # Stufe 1: Build-Umgebung
 FROM node:${NODE_VERSION} AS builder
